@@ -1,0 +1,14 @@
+{
+	"name": "akashsrma/magazine",
+	"description": "The Magazine block theme. Composer is used only for its PSR-4 autoloader.",
+	"type": "wordpress-theme",
+	"license": "GPL-2.0-or-later",
+	"require": {
+		"php": ">=8.2"
+	},
+	"autoload": {
+		"psr-4": {
+			"Magazine\\": "inc/"
+		}
+	}
+}

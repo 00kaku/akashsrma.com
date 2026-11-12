@@ -1,0 +1,42 @@
+# Dependencies and generated autoloaders (`npm install`, `composer install`, `npm run build`)
+/node_modules/
+/vendor/
+/plugins/*/vendor/
+/themes/*/vendor/
+
+# Build output (rebuilt by `npm run build`; CI builds and deploys it)
+/plugins/*/build/
+/themes/*/build/
+/dist/
+*.zip
+
+# Local environment and secrets
+.wp-env.override.json
+.env
+.env.*
+!.env.example
+
+# Tool caches and reports
+.eslintcache
+.stylelintcache
+.phpcs-cache
+.phpcs.cache
+.phpunit.result.cache
+.phpunit.cache/
+coverage/
+/artifacts/
+
+# Local-only working files: scripts and notes kept for our own understanding, not published
+/bin/
+/docs/
+
+# Logs
+*.log
+
+# Editors and operating systems
+.idea/
+.vscode/
+*.swp
+*~
+.DS_Store
+Thumbs.db

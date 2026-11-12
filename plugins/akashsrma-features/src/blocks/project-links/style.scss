@@ -1,0 +1,11 @@
+// Plain structure only: a row of links that takes the theme's text and link styles. Each theme designs the
+// block itself (the Magazine theme does in its page styles).
+.wp-block-akashsrma-project-links {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5em 1.5em;
+}
+
+.project-links__note {
+	margin: 0;
+}

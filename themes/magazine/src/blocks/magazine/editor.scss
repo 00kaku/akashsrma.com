@@ -1,0 +1,34 @@
+// The editor shows a post the way the scrolling edition prints it: same tokens, same block styles, on paper.
+// The site editor (which renders the whole magazine) is left alone.
+
+@use "content" as *;
+
+.editor-styles-wrapper:not(:has(.wp-block-magazine-magazine)) {
+
+	@include reader-tokens;
+	@include content;
+	box-sizing: border-box;
+	padding: 32px var(--mz-pad-side);
+	background: $paper;
+
+	// One page-wide, left-aligned column, as on the site; core's constrained layout would centre every block.
+	.is-root-container,
+	.edit-post-visual-editor__post-title-wrapper {
+		max-width: 640px;
+		margin-right: auto;
+		margin-left: auto;
+	}
+
+	.is-root-container > :not(.alignfull, .aligncenter, .alignright),
+	.is-layout-constrained > :not(.alignfull, .aligncenter, .alignright) {
+		margin-left: 0 !important;
+	}
+
+	// A bleed picture runs to the paper's edges in print; here it shows at the column's width, in proportion.
+	:is(.is-style-bleed, .is-style-bleed-short) img {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 3 / 2;
+		object-fit: cover;
+	}
+}

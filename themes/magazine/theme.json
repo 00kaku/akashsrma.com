@@ -1,0 +1,277 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/theme.json",
+	"version": 3,
+	"settings": {
+		"appearanceTools": true,
+		"useRootPaddingAwareAlignments": true,
+		"layout": {
+			"contentSize": "42rem",
+			"wideSize": "77.5rem"
+		},
+		"color": {
+			"custom": false,
+			"customGradient": false,
+			"defaultPalette": false,
+			"defaultGradients": false,
+			"palette": [
+				{
+					"slug": "paper",
+					"name": "Paper",
+					"color": "#FBF9F5"
+				},
+				{
+					"slug": "ink",
+					"name": "Ink",
+					"color": "#1B1A17"
+				},
+				{
+					"slug": "accent",
+					"name": "Accent",
+					"color": "#3B5BA9"
+				},
+				{
+					"slug": "muted",
+					"name": "Muted",
+					"color": "#8B867C"
+				},
+				{
+					"slug": "table",
+					"name": "Table",
+					"color": "#EDE8E0"
+				},
+				{
+					"slug": "walnut",
+					"name": "Walnut",
+					"color": "#1A1613"
+				},
+				{
+					"slug": "flag-yellow",
+					"name": "Flag yellow",
+					"color": "#F3D766"
+				},
+				{
+					"slug": "flag-blue",
+					"name": "Flag blue",
+					"color": "#9DBDEB"
+				},
+				{
+					"slug": "flag-coral",
+					"name": "Flag coral",
+					"color": "#F0A796"
+				},
+				{
+					"slug": "flag-green",
+					"name": "Flag green",
+					"color": "#A6D7BC"
+				}
+			]
+		},
+		"typography": {
+			"customFontSize": false,
+			"defaultFontSizes": false,
+			"fluid": false,
+			"fontFamilies": [
+				{
+					"slug": "display",
+					"name": "Display (Bodoni Moda)",
+					"fontFamily": "\"Bodoni Moda Variable\", Didot, \"Times New Roman\", serif",
+					"fontFace": [
+						{
+							"fontFamily": "Bodoni Moda Variable",
+							"fontStyle": "normal",
+							"fontWeight": "400 900",
+							"fontDisplay": "swap",
+							"src": [
+								"file:./assets/fonts/bodoni-moda-latin-wght-normal.woff2"
+							]
+						},
+						{
+							"fontFamily": "Bodoni Moda Variable",
+							"fontStyle": "italic",
+							"fontWeight": "400 900",
+							"fontDisplay": "swap",
+							"src": [
+								"file:./assets/fonts/bodoni-moda-latin-wght-italic.woff2"
+							]
+						}
+					]
+				},
+				{
+					"slug": "body",
+					"name": "Body (Source Serif 4)",
+					"fontFamily": "\"Source Serif 4 Variable\", Georgia, serif",
+					"fontFace": [
+						{
+							"fontFamily": "Source Serif 4 Variable",
+							"fontStyle": "normal",
+							"fontWeight": "200 900",
+							"fontDisplay": "swap",
+							"src": [
+								"file:./assets/fonts/source-serif-4-latin-wght-normal.woff2"
+							]
+						},
+						{
+							"fontFamily": "Source Serif 4 Variable",
+							"fontStyle": "italic",
+							"fontWeight": "200 900",
+							"fontDisplay": "swap",
+							"src": [
+								"file:./assets/fonts/source-serif-4-latin-wght-italic.woff2"
+							]
+						}
+					]
+				},
+				{
+					"slug": "label",
+					"name": "Label (Libre Franklin)",
+					"fontFamily": "\"Libre Franklin Variable\", \"Helvetica Neue\", Arial, sans-serif",
+					"fontFace": [
+						{
+							"fontFamily": "Libre Franklin Variable",
+							"fontStyle": "normal",
+							"fontWeight": "100 900",
+							"fontDisplay": "swap",
+							"src": [
+								"file:./assets/fonts/libre-franklin-latin-wght-normal.woff2"
+							]
+						},
+						{
+							"fontFamily": "Libre Franklin Variable",
+							"fontStyle": "italic",
+							"fontWeight": "100 900",
+							"fontDisplay": "swap",
+							"src": [
+								"file:./assets/fonts/libre-franklin-latin-wght-italic.woff2"
+							]
+						}
+					]
+				},
+				{
+					"slug": "mono",
+					"name": "Mono (system)",
+					"fontFamily": "ui-monospace, \"SF Mono\", Menlo, Consolas, monospace"
+				}
+			],
+			"fontSizes": [
+				{
+					"slug": "small",
+					"name": "Small",
+					"size": "clamp(12.6px, 11.7px + 0.225vw, 13.5px)"
+				},
+				{
+					"slug": "medium",
+					"name": "Body",
+					"size": "clamp(14px, 13px + 0.25vw, 15px)"
+				},
+				{
+					"slug": "large",
+					"name": "Deck",
+					"size": "clamp(16.1px, 14.95px + 0.2875vw, 17.25px)"
+				},
+				{
+					"slug": "x-large",
+					"name": "Headline",
+					"size": "clamp(22.4px, 20.8px + 0.4vw, 24px)"
+				},
+				{
+					"slug": "display",
+					"name": "Display",
+					"size": "clamp(28px, 26px + 0.5vw, 30px)"
+				}
+			]
+		},
+		"spacing": {
+			"units": [ "px", "rem", "%", "vw", "vh" ],
+			"defaultSpacingSizes": false,
+			"spacingSizes": [
+				{
+					"slug": "20",
+					"name": "1",
+					"size": "5.6px"
+				},
+				{
+					"slug": "30",
+					"name": "2",
+					"size": "9.8px"
+				},
+				{
+					"slug": "40",
+					"name": "3",
+					"size": "14px"
+				},
+				{
+					"slug": "50",
+					"name": "4",
+					"size": "21px"
+				},
+				{
+					"slug": "60",
+					"name": "5",
+					"size": "31.5px"
+				},
+				{
+					"slug": "70",
+					"name": "6",
+					"size": "45.5px"
+				}
+			]
+		}
+	},
+	"styles": {
+		"color": {
+			"background": "var(--wp--preset--color--paper)",
+			"text": "var(--wp--preset--color--ink)"
+		},
+		"spacing": {
+			"padding": {
+				"left": "0",
+				"right": "0",
+				"top": "0",
+				"bottom": "0"
+			},
+			"blockGap": "var(--wp--preset--spacing--40)"
+		},
+		"typography": {
+			"fontFamily": "var(--wp--preset--font-family--body)",
+			"fontSize": "var(--wp--preset--font-size--medium)",
+			"lineHeight": "1.6"
+		},
+		"elements": {
+			"heading": {
+				"typography": {
+					"fontFamily": "var(--wp--preset--font-family--display)",
+					"fontWeight": "800",
+					"lineHeight": "1",
+					"letterSpacing": "-0.02em"
+				}
+			},
+			"link": {
+				"color": {
+					"text": "var(--wp--preset--color--accent)"
+				},
+				":hover": {
+					"color": {
+						"text": "var(--wp--preset--color--ink)"
+					}
+				}
+			},
+			"button": {
+				"color": {
+					"background": "var(--wp--preset--color--ink)",
+					"text": "var(--wp--preset--color--paper)"
+				},
+				"typography": {
+					"fontFamily": "var(--wp--preset--font-family--label)",
+					"fontSize": "var(--wp--preset--font-size--small)",
+					"fontWeight": "600"
+				}
+			},
+			"caption": {
+				"typography": {
+					"fontFamily": "var(--wp--preset--font-family--label)",
+					"fontSize": "var(--wp--preset--font-size--small)"
+				}
+			}
+		}
+	}
+}

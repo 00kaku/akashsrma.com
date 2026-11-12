@@ -1,0 +1,147 @@
+/* Content → Sections */
+.akashsrma-sections__list {
+	max-width: 960px;
+	margin: 20px 0 0;
+	list-style: none;
+	counter-reset: section;
+}
+
+.akashsrma-sections__row {
+	display: flex;
+	align-items: flex-start;
+	gap: 12px;
+	margin: 0 0 10px;
+	padding: 14px 16px;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	background: #fff;
+	counter-increment: section;
+}
+
+.akashsrma-sections__placeholder {
+	height: 96px;
+	margin: 0 0 10px;
+	border: 2px dashed #c3c4c7;
+	border-radius: 4px;
+}
+
+.akashsrma-sections__handle {
+	margin-top: 4px;
+	color: #8c8f94;
+	cursor: grab;
+}
+
+.akashsrma-sections__handle::after {
+	content: counter(section);
+	display: block;
+	margin-top: 6px;
+	font: 600 12px/1 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+	text-align: center;
+}
+
+.akashsrma-sections__main {
+	flex: 1;
+	min-width: 0;
+}
+
+.akashsrma-sections__head {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 10px 14px;
+	margin: 0;
+}
+
+.akashsrma-sections__label {
+	margin: 12px 0 0;
+}
+
+.akashsrma-sections__badge {
+	padding: 2px 8px;
+	border-radius: 999px;
+	background: #f0f0f1;
+	color: #50575e;
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+}
+
+.akashsrma-sections__actions {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.akashsrma-sections__remove {
+	margin-left: 6px !important;
+	color: #b32d2e !important;
+}
+
+.akashsrma-sections__posts {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	margin-top: 14px;
+}
+
+.akashsrma-sections__posts legend {
+	margin-bottom: 4px;
+	font-weight: 600;
+}
+
+/* The checklist only matters when posts are chosen by hand. */
+.akashsrma-sections__posts:not(:has(input[value="1"]:checked)) .akashsrma-sections__picker {
+	display: none;
+}
+
+.akashsrma-sections__picker {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	max-width: 520px;
+}
+
+.akashsrma-sections__picks {
+	margin: 0;
+	list-style: none;
+}
+
+.akashsrma-sections__picks:empty {
+	display: none;
+}
+
+.akashsrma-sections__picks li {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin: 0 0 4px;
+	padding: 6px 8px 6px 10px;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	background: #fff;
+}
+
+.akashsrma-sections__pick-title {
+	flex: 1;
+	min-width: 0;
+}
+
+.akashsrma-sections__pick-handle {
+	color: #8c8f94;
+	cursor: grab;
+}
+
+.akashsrma-sections__unpick {
+	color: #b32d2e !important;
+}
+
+.akashsrma-sections__picker .ui-autocomplete {
+	max-width: 520px;
+}
+
+.akashsrma-sections__label label {
+	display: inline-flex;
+	flex-direction: column;
+	gap: 4px;
+}

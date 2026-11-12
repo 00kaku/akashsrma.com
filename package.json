@@ -1,0 +1,71 @@
+{
+	"name": "akashsrma.com",
+	"private": true,
+	"description": "Akash Sharma's portfolio: the Magazine block theme and the Akashsrma Features plugin.",
+	"license": "GPL-2.0-or-later",
+	"engines": {
+		"node": ">=20",
+		"npm": ">=10"
+	},
+	"devDependencies": {
+		"@fontsource-variable/bodoni-moda": "^5.3.0",
+		"@fontsource-variable/libre-franklin": "^5.3.0",
+		"@fontsource-variable/source-serif-4": "^5.3.1",
+		"@wordpress/env": "^11.17.0",
+		"@wordpress/prettier-config": "^4.57.0",
+		"@wordpress/scripts": "^36.1.0",
+		"@wordpress/stylelint-config": "^26.1.0",
+		"husky": "^9.1.7",
+		"lint-staged": "^17.6.0",
+		"prettier": "npm:wp-prettier@^3.9.6",
+		"vite": "^8.3.4",
+		"vitest": "^5.0.5"
+	},
+	"scripts": {
+		"build": "npm run build:php && npm run build:features && npm run build:magazine",
+		"build:php": "composer dump-autoload --optimize --working-dir=plugins/akashsrma-features && composer dump-autoload --optimize --working-dir=themes/magazine",
+		"build:features": "rm -rf plugins/akashsrma-features/build && wp-scripts build --source-path=plugins/akashsrma-features/src/blocks --output-path=plugins/akashsrma-features/build/blocks --blocks-manifest --experimental-modules",
+		"build:magazine": "rm -rf themes/magazine/build && wp-scripts build --source-path=themes/magazine/src/blocks --output-path=themes/magazine/build/blocks --blocks-manifest --experimental-modules",
+		"start": "npm run build:php && (npm run start:features & npm run start:magazine & wait)",
+		"start:features": "wp-scripts start --source-path=plugins/akashsrma-features/src/blocks --output-path=plugins/akashsrma-features/build/blocks --blocks-manifest --experimental-modules",
+		"start:magazine": "wp-scripts start --source-path=themes/magazine/src/blocks --output-path=themes/magazine/build/blocks --blocks-manifest --experimental-modules",
+		"env:start": "wp-env start",
+		"env:stop": "wp-env stop",
+		"env:reset": "wp-env clean all && wp-env start",
+		"env:reseed": "bash bin/seed.sh fresh",
+		"env:cli": "wp-env run cli wp",
+		"test": "npm run test:js && npm run test:php",
+		"test:js": "wp-scripts test-unit-js",
+		"test:php": "wp-env run tests-cli --env-cwd=wp-content/akashsrma-repo vendor/bin/phpunit",
+		"lint": "npm run lint:js && npm run lint:css && npm run lint:php",
+		"lint:js": "wp-scripts lint-js plugins themes",
+		"lint:css": "wp-scripts lint-style \"{plugins,themes}/*/src/**/*.scss\"",
+		"lint:php": "composer lint && composer analyse",
+		"format": "wp-scripts format plugins themes && composer format",
+		"fonts": "cp node_modules/@fontsource-variable/*/files/*-latin-wght-*.woff2 themes/magazine/assets/fonts/",
+		"prepare": "husky"
+	},
+	"prettier": "@wordpress/prettier-config",
+	"stylelint": {
+		"extends": "@wordpress/stylelint-config/scss",
+		"rules": {
+			"selector-class-pattern": [
+				"^[a-z][a-z0-9]*(-[a-z0-9]+)*(__[a-z0-9]+(-[a-z0-9]+)*)?(--[a-z0-9]+(-[a-z0-9]+)*)?$",
+				{
+					"message": "Use lowercase BEM: block__element--modifier"
+				}
+			]
+		}
+	},
+	"lint-staged": {
+		"*.{js,jsx}": [
+			"wp-scripts lint-js --fix"
+		],
+		"*.scss": [
+			"wp-scripts lint-style --fix"
+		],
+		"*.php": [
+			"vendor/bin/phpcs"
+		]
+	}
+}

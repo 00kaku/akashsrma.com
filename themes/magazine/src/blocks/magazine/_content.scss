@@ -1,0 +1,881 @@
+// The magazine's style guide in code: the tokens every page is set in, and how each block looks on a page.
+// Shared by the front end (style.scss, inside .magazine__page-body) and the editor (editor.scss), so what
+// an author sees while writing is what the page prints.
+
+// Sizes and spaces are tokens (--mz-*), defined twice:
+// - book: a share of the page width (cqw), so a page scales like print, with the prototype's sizes;
+// - reader: fixed reading sizes for the scrolling edition (phones, tablets) and the editor.
+// Components and blocks only ever use the tokens.
+
+$display: "Bodoni Moda Variable", "Bodoni Moda", serif;
+$body: "Source Serif 4 Variable", "Source Serif 4", serif;
+$label: "Libre Franklin Variable", "Libre Franklin", sans-serif;
+$mono: ui-monospace, "SF Mono", menlo, consolas, monospace;
+
+// Pages are always paper, in dark mode too, so content colours are fixed.
+$paper: #fbf9f5;
+$page-ink: #1b1a17;
+$text: #2a2926;
+$soft-text: #3b3934;
+$grey: #8b867c;
+$blue: #3b5ba9;
+$blue-dark: #2c4687;
+$rule: rgb(27 26 23 / 16%);
+$tint: rgb(27 26 23 / 5%);
+
+// ---------- tokens ----------
+
+// Reading sizes are built on one number: body text, 14px on a phone and 15px on a tablet. Every other size
+// and space is a multiple of it, so changing --mz-text rescales the whole page. Labels never drop below 10px;
+// titles stop well short of the book's page-filling sizes.
+@mixin reader-tokens {
+	--mz-pad-top: calc(var(--mz-text) * 2.5);
+	--mz-pad-side: clamp(16px, 13.6vw - 55px, 44px);
+	--mz-pad-bottom: calc(var(--mz-text) * 2);
+
+	--mz-text: clamp(14px, 13px + 0.25vw, 15px);
+	--mz-leading: 1.6;
+	--mz-small: calc(var(--mz-text) * 0.9);
+	--mz-deck: calc(var(--mz-text) * 1.15);
+	--mz-h3: calc(var(--mz-text) * 1.3);
+	--mz-micro: max(10px, var(--mz-text) * 0.7);
+	--mz-label: max(10px, var(--mz-text) * 0.75);
+	--mz-action: calc(var(--mz-text) * 0.8);
+	--mz-biglink: calc(var(--mz-text) * 1.5);
+	--mz-num: calc(var(--mz-text) * 1.4);
+	--mz-title-xs: calc(var(--mz-text) * 1.6);
+	--mz-title-s: calc(var(--mz-text) * 1.75);
+	--mz-title-m: calc(var(--mz-text) * 2);
+	--mz-title-l: calc(var(--mz-text) * 2.35);
+	--mz-title-xl: calc(var(--mz-text) * 2.7);
+
+	--mz-space-1: calc(var(--mz-text) * 0.4);
+	--mz-space-2: calc(var(--mz-text) * 0.7);
+	--mz-space-3: var(--mz-text);
+	--mz-space-4: calc(var(--mz-text) * 1.5);
+	--mz-space-5: calc(var(--mz-text) * 2.25);
+	--mz-space-6: calc(var(--mz-text) * 3.25);
+	--mz-flow: var(--mz-space-3);
+	--mz-kicker-gap: calc(var(--mz-text) * 0.75);
+	--mz-title-gap: calc(var(--mz-text) * 0.85);
+	--mz-deck-gap: calc(var(--mz-text) * 1.4);
+	--mz-row: calc(var(--mz-text) * 0.9);
+
+	--mz-bleed: min(62vw, 380px);
+	--mz-bleed-y: var(--mz-pad-top);
+	--mz-bleed-x: var(--mz-pad-side);
+	--mz-bleed-gap: var(--mz-deck-gap);
+	--mz-media-max: 45cqw; // pictures stay within the page's proportions
+}
+
+// Print sizes: every value is a share of the page width (cqw inside the page), as in the prototype.
+@mixin book-tokens {
+	--mz-pad-top: calc(var(--magazine-page) * 0.08);
+	--mz-pad-side: calc(var(--magazine-page) * 0.085);
+	--mz-pad-bottom: calc(var(--magazine-page) * 0.055);
+
+	--mz-text: clamp(13px, 2.72cqw, 18.5px);
+	--mz-leading: 1.68;
+	--mz-small: clamp(12px, 2.35cqw, 16px);
+	--mz-deck: clamp(14px, 3.05cqw, 21px);
+	--mz-h3: clamp(15px, 3.6cqw, 25px);
+	--mz-micro: clamp(8.5px, 1.55cqw, 11px);
+	--mz-label: clamp(9px, 1.75cqw, 12px);
+	--mz-action: clamp(10px, 1.9cqw, 13px);
+	--mz-biglink: clamp(18px, 4.6cqw, 34px);
+	--mz-num: clamp(16px, 4cqw, 30px);
+	--mz-title-xs: 7cqw;
+	--mz-title-s: 7.6cqw;
+	--mz-title-m: 9cqw;
+	--mz-title-l: 12.5cqw;
+	--mz-title-xl: 15cqw;
+
+	--mz-space-1: 0.8cqw;
+	--mz-space-2: 1.8cqw;
+	--mz-space-3: 2.4cqw;
+	--mz-space-4: 3.6cqw;
+	--mz-space-5: 5.4cqw;
+	--mz-space-6: 8cqw;
+	--mz-flow: 2.4cqw;
+	--mz-kicker-gap: 3cqw;
+	--mz-title-gap: 3.6cqw;
+	--mz-deck-gap: 4.4cqw;
+	--mz-row: 2.6cqw;
+
+	--mz-media-max: 48cqw;
+	--mz-bleed-y: 8cqw;
+	--mz-bleed-x: 8.5cqw;
+	--mz-bleed-gap: 4cqw;
+}
+
+// Small desktop windows (≈1024px): book pages are only ~410px wide, so text tightens instead of spilling.
+@mixin book-tokens-compact {
+	--mz-text: 12.5px;
+	--mz-leading: 1.55;
+	--mz-deck-gap: 3cqw;
+}
+
+// WordPress's own presets (the editor's size and spacing pickers) resolve to the page's tokens, so a size an
+// author picks scales with the page like everything else.
+@mixin preset-map {
+	--wp--preset--font-size--small: var(--mz-small);
+	--wp--preset--font-size--medium: var(--mz-text);
+	--wp--preset--font-size--large: var(--mz-deck);
+	--wp--preset--font-size--x-large: var(--mz-title-xs);
+	--wp--preset--font-size--display: var(--mz-title-m);
+	--wp--preset--spacing--20: var(--mz-space-1);
+	--wp--preset--spacing--30: var(--mz-space-2);
+	--wp--preset--spacing--40: var(--mz-space-3);
+	--wp--preset--spacing--50: var(--mz-space-4);
+	--wp--preset--spacing--60: var(--mz-space-5);
+	--wp--preset--spacing--70: var(--mz-space-6);
+	--wp--style--block-gap: var(--mz-flow);
+	--wp--style--global--content-size: 100%;
+	--wp--style--global--wide-size: 100%;
+	--wp--style--unstable-gallery-gap: var(--mz-space-2);
+}
+
+// Shared type treatments.
+@mixin label-caps($size: var(--mz-label)) {
+	font-family: $label;
+	font-size: $size;
+	font-weight: 700;
+	line-height: 1.3;
+	letter-spacing: 0.16em;
+	text-transform: uppercase;
+}
+
+// ---------- content: every block an author can put on a page ----------
+// `&` is the content root: .magazine__page-body on the site, .editor-styles-wrapper in the editor.
+// Element rules have one class of specificity, so the magazine's own classes (two) always win.
+
+@mixin content {
+
+	@include preset-map;
+	color: $text;
+	font-family: $body;
+	font-size: var(--mz-text);
+	line-height: var(--mz-leading);
+	overflow-wrap: break-word;
+
+	// Flow: each block keeps a gap below it; the last one closes the page.
+	&,
+	.is-root-container {
+
+		> * {
+			margin: 0 0 var(--mz-flow);
+		}
+
+		> :last-child {
+			margin-bottom: 0;
+		}
+	}
+
+	// ---- text ----
+
+	p,
+	li,
+	dd {
+		font-size: var(--mz-text);
+		line-height: var(--mz-leading);
+		hyphens: auto;
+	}
+
+	p,
+	ul,
+	ol,
+	dl {
+		max-width: 66ch;
+		color: $text;
+	}
+
+	.has-drop-cap:not(:focus)::first-letter {
+		float: left;
+		padding: 0.06em 0.08em 0 0;
+		color: $page-ink;
+		font-family: $display;
+		font-size: 3.6em;
+		font-weight: 800;
+		line-height: 0.82;
+	}
+
+	a:where(:not([class])) {
+		color: $blue;
+		text-decoration: underline;
+		text-decoration-thickness: 1px;
+		text-underline-offset: 0.18em;
+
+		&:hover {
+			color: $blue-dark;
+		}
+	}
+
+	strong,
+	b {
+		color: $page-ink;
+		font-weight: 700;
+	}
+
+	sub,
+	sup {
+		line-height: 0;
+	}
+
+	mark {
+		padding: 0 0.15em;
+		background: rgb(243 215 102 / 55%);
+		color: inherit;
+	}
+
+	kbd,
+	:where(p, li, td, th, dd) code {
+		padding: 0.08em 0.3em;
+		border-radius: 2px;
+		background: $tint;
+		font-family: $mono;
+		font-size: 0.86em;
+	}
+
+	// Headings: display serif for the big ones, the label face for small subheads, as magazines set them.
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		max-width: none;
+		margin-bottom: var(--mz-space-2);
+		color: $page-ink;
+		text-wrap: balance;
+	}
+
+	:not(.magazine-kicker) + :is(h1, h2, h3, h4, h5, h6) {
+		margin-top: var(--mz-space-3);
+	}
+
+	h1,
+	h2,
+	h3 {
+		font-family: $display;
+		font-weight: 800;
+		line-height: 1.02;
+		letter-spacing: -0.02em;
+	}
+
+	h1 {
+		font-size: var(--mz-title-m);
+	}
+
+	h2 {
+		font-size: var(--mz-title-xs);
+	}
+
+	h3 {
+		font-size: var(--mz-h3);
+		font-weight: 700;
+		line-height: 1.12;
+	}
+
+	h4 {
+		font-family: $label;
+		font-size: var(--mz-small);
+		font-weight: 700;
+		line-height: 1.3;
+		letter-spacing: 0.01em;
+	}
+
+	h5,
+	h6 {
+
+		@include label-caps;
+	}
+
+	h6 {
+		color: $grey;
+	}
+
+	// Lists: hanging markers in the accent colour.
+	ul,
+	ol {
+		padding-left: 1.15em;
+	}
+
+	li + li,
+	li > ul,
+	li > ol {
+		margin-top: var(--mz-space-1);
+	}
+
+	li::marker {
+		color: $blue;
+	}
+
+	ol > li::marker {
+		font-family: $label;
+		font-size: 0.82em;
+		font-weight: 700;
+	}
+
+	dt {
+
+		@include label-caps;
+		margin-top: var(--mz-space-2);
+		color: $grey;
+	}
+
+	// ---- quotes ----
+
+	.wp-block-quote {
+		max-width: 40ch;
+		padding: 0 0 0 var(--mz-space-3);
+		border-left: 2px solid $blue;
+
+		p {
+			color: $soft-text;
+			font-size: var(--mz-deck);
+			font-style: italic;
+			line-height: 1.45;
+		}
+
+		p:last-of-type {
+			margin-bottom: 0;
+		}
+	}
+
+	cite,
+	.wp-block-quote cite,
+	.wp-block-pullquote cite {
+
+		@include label-caps(var(--mz-micro));
+		display: block;
+		margin-top: var(--mz-space-2);
+		color: $grey;
+		font-style: normal;
+	}
+
+	.wp-block-pullquote {
+		padding: var(--mz-space-3) 0;
+		border-top: 1px solid $page-ink;
+		border-bottom: 1px solid $page-ink;
+		text-align: left;
+
+		blockquote {
+			margin: 0;
+		}
+
+		p {
+			max-width: none;
+			margin: 0;
+			color: $page-ink;
+			font-family: $display;
+			font-size: var(--mz-h3);
+			font-style: italic;
+			font-weight: 600;
+			line-height: 1.2;
+			letter-spacing: -0.01em;
+			hyphens: manual;
+		}
+	}
+
+	.wp-block-verse {
+		padding: 0;
+		background: none;
+		color: $soft-text;
+		font-family: $body;
+		font-size: var(--mz-text);
+		font-style: italic;
+		white-space: pre-wrap;
+	}
+
+	// ---- code ----
+
+	pre:not(.wp-block-verse),
+	.wp-block-code,
+	.wp-block-preformatted {
+		box-sizing: border-box;
+		max-width: 100%;
+		padding: var(--mz-space-2) var(--mz-space-3);
+		border: 0;
+		border-left: 2px solid $page-ink;
+		border-radius: 0;
+		background: $tint;
+		color: $page-ink;
+		font-family: $mono;
+		font-size: calc(var(--mz-small) * 0.86);
+		line-height: 1.55;
+		white-space: pre-wrap;
+		overflow-wrap: anywhere;
+
+		code {
+			padding: 0;
+			background: none;
+			font-size: inherit;
+		}
+	}
+
+	// ---- media: never taller than the page allows ----
+
+	img,
+	video,
+	iframe,
+	svg {
+		max-width: 100%;
+	}
+
+	:where(.wp-block-image, .wp-block-video, .wp-block-cover, .wp-block-media-text) {
+		max-width: 100%;
+	}
+
+	// A picture fills the column's width, cropped to at most --mz-media-max tall; the Bleed styles go further.
+	.wp-block-image:not(.is-style-bleed, .is-style-bleed-short) img,
+	.wp-block-video video {
+		display: block;
+		width: 100%;
+		max-width: 100%;
+		height: auto;
+		max-height: var(--mz-media-max);
+		object-fit: cover;
+	}
+
+	.wp-block-video video {
+		width: 100%;
+	}
+
+	figcaption,
+	.wp-element-caption {
+		margin: var(--mz-space-1) 0 0;
+		color: $grey;
+		font-family: $label;
+		font-size: var(--mz-micro);
+		font-weight: 500;
+		line-height: 1.45;
+		letter-spacing: 0.02em;
+		text-align: left;
+	}
+
+	.wp-block-gallery > figcaption {
+		flex-basis: 100%;
+		text-align: left;
+	}
+
+	.wp-block-gallery {
+		gap: var(--mz-space-2);
+
+		&.has-nested-images figure.wp-block-image figcaption {
+			font-family: $label;
+			font-size: var(--mz-micro);
+		}
+
+		img {
+			max-height: var(--mz-media-max);
+		}
+	}
+
+	.wp-block-embed__wrapper iframe,
+	.wp-block-audio audio {
+		width: 100%;
+	}
+
+	.wp-block-cover {
+		min-height: var(--mz-media-max);
+		padding: var(--mz-space-4);
+	}
+
+	// A full-width block runs to the paper's edges; a wide one is just the column (a page has no wider grid).
+	.alignfull {
+		max-width: none;
+		margin-right: calc(var(--mz-bleed-x) * -1);
+		margin-left: calc(var(--mz-bleed-x) * -1);
+	}
+
+	// A page is one column, so left and right alignments sit at that edge at half width instead of floating.
+	.alignleft,
+	.alignright {
+		float: none;
+		width: 50%;
+		margin-right: 0;
+		margin-left: 0;
+	}
+
+	.alignright {
+		align-self: flex-end;
+		margin-left: auto;
+	}
+
+	.aligncenter {
+		align-self: center;
+		margin-right: auto;
+		margin-left: auto;
+	}
+
+	// ---- tables ----
+
+	.wp-block-table {
+		overflow-x: auto;
+
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			border-top: 1px solid $page-ink;
+		}
+
+		td,
+		th {
+			padding: var(--mz-space-1) var(--mz-space-2) var(--mz-space-1) 0;
+			border: 0;
+			border-bottom: 1px solid $rule;
+			color: $text;
+			font-size: var(--mz-small);
+			line-height: 1.45;
+			text-align: left;
+			vertical-align: top;
+		}
+
+		th,
+		thead td {
+
+			@include label-caps(var(--mz-micro));
+			color: $grey;
+		}
+
+		thead {
+			border-bottom: 1px solid $page-ink;
+		}
+
+		tfoot {
+			border-top: 1px solid $page-ink;
+		}
+
+		&.is-style-stripes {
+			border-bottom: 0;
+
+			tbody tr:nth-child(odd) {
+				background: $tint;
+			}
+		}
+	}
+
+	// ---- rules, buttons, details ----
+
+	.wp-block-separator,
+	hr {
+		width: 100%;
+		max-width: none;
+		height: 0;
+		margin-top: var(--mz-space-4);
+		margin-bottom: var(--mz-space-4);
+		border: 0;
+		border-top: 1px solid $page-ink;
+		background: none;
+		opacity: 1;
+
+		&.is-style-dots {
+			border: 0;
+			color: $blue;
+			text-align: center;
+
+			&::before {
+				content: "· · ·";
+				padding: 0;
+				font-family: $display;
+				font-size: var(--mz-deck);
+				letter-spacing: 0.4em;
+			}
+		}
+	}
+
+	.wp-block-buttons {
+		gap: var(--mz-space-2);
+	}
+
+	.wp-block-button__link,
+	.wp-block-file__button {
+
+		@include label-caps(var(--mz-action));
+		display: inline-block;
+		padding: var(--mz-space-2) var(--mz-space-3);
+		border: 1px solid $page-ink;
+		border-radius: 0;
+		background: $page-ink;
+		color: $paper;
+		text-decoration: none;
+
+		&:hover {
+			background: $blue;
+			border-color: $blue;
+			color: $paper;
+		}
+	}
+
+	.is-style-outline > .wp-block-button__link {
+		background: transparent;
+		color: $page-ink;
+
+		&:hover {
+			background: $page-ink;
+			color: $paper;
+		}
+	}
+
+	.wp-block-file {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--mz-space-2) var(--mz-space-3);
+		font-size: var(--mz-small);
+	}
+
+	.wp-block-details {
+		border-top: 1px solid $rule;
+		border-bottom: 1px solid $rule;
+
+		summary {
+
+			@include label-caps(var(--mz-action));
+			padding: var(--mz-space-2) 0;
+			color: $page-ink;
+			cursor: pointer;
+
+			&::marker {
+				color: $blue;
+			}
+		}
+
+		> :not(summary) {
+			margin-bottom: var(--mz-space-2);
+		}
+	}
+
+	.wp-block-footnotes {
+		padding-top: var(--mz-space-2);
+		border-top: 1px solid $rule;
+
+		li {
+			font-size: var(--mz-small);
+		}
+	}
+
+	// ---- layout blocks ----
+
+	.wp-block-columns {
+		gap: var(--mz-space-4);
+		margin-bottom: var(--mz-flow);
+	}
+
+	.wp-block-column > :last-child,
+	.wp-block-group > :last-child {
+		margin-bottom: 0;
+	}
+
+	// A page is already the column: constrained groups don't narrow or centre it again.
+	.is-layout-constrained > * {
+		max-width: none;
+	}
+
+	.wp-block-group.has-background,
+	.wp-block-column.has-background {
+		padding: var(--mz-space-3) var(--mz-space-4);
+	}
+
+	.wp-block-media-text {
+		gap: var(--mz-space-3);
+
+		.wp-block-media-text__content {
+			padding: 0;
+		}
+	}
+
+	// ---- the magazine's own blocks and classes ----
+
+	.magazine-kicker {
+
+		@include label-caps;
+		max-width: none;
+		margin-bottom: var(--mz-kicker-gap);
+		color: $blue;
+		line-height: 1;
+		letter-spacing: 0.2em;
+	}
+
+	.magazine-push {
+		margin-top: auto;
+	}
+
+	.magazine-title {
+		margin-top: 0;
+		margin-bottom: var(--mz-title-gap);
+		color: $page-ink;
+		font-family: $display;
+		font-size: var(--mz-title-m);
+		font-weight: 800;
+		line-height: 0.96;
+		letter-spacing: -0.025em;
+		text-wrap: wrap;
+
+		@each $size in xs, s, m, l, xl {
+			&.is-size-#{$size} {
+				font-size: var(--mz-title-#{$size});
+			}
+		}
+	}
+
+	.magazine-deck {
+		max-width: 40ch;
+		margin-bottom: var(--mz-deck-gap);
+		color: $soft-text;
+		font-size: var(--mz-deck);
+		font-style: italic;
+		line-height: 1.5;
+		hyphens: manual;
+	}
+
+	// Facts under a case-study picture: a ruled two-column table.
+	.is-style-facts {
+		margin-bottom: 0;
+
+		table {
+			border-top-color: $page-ink;
+		}
+
+		td {
+			padding: var(--mz-space-2) 0;
+			font-size: var(--mz-small);
+		}
+
+		td:first-child {
+
+			@include label-caps(var(--mz-micro));
+			width: 22%;
+			padding-right: var(--mz-space-3);
+			color: $grey;
+			line-height: 1.5;
+		}
+	}
+
+	// The rule sits on the paragraph so the link can slide on hover (a transform: nothing rewraps).
+	.magazine-biglink {
+		max-width: none;
+		margin: 0;
+		border-bottom: 1px solid rgb(17 17 17 / 18%);
+
+		a {
+			display: block;
+			padding: var(--mz-row) 0;
+			color: $page-ink;
+			font-family: $display;
+			font-size: var(--mz-biglink);
+			font-weight: 600;
+			line-height: 1.25;
+			text-decoration: none;
+			transition: color 0.2s ease, transform 0.25s ease;
+
+			&:hover {
+				color: $blue;
+				transform: translateX(8px);
+			}
+		}
+	}
+
+	// Related-project rows: the ↗ and → sit in the margins; the heading and summary flow between them.
+	.magazine-related {
+		display: flex;
+		flex-direction: column;
+		max-width: none;
+		margin: var(--mz-space-2) 0 0;
+		border-top: 1px solid rgb(27 26 23 / 50%);
+
+		a {
+			position: relative;
+			display: block;
+			padding: var(--mz-row) calc(var(--mz-small) * 1.5 + var(--mz-space-3)) var(--mz-row) calc(var(--mz-num) * 2 + var(--mz-space-4));
+			border-bottom: 1px solid $rule;
+			color: $soft-text;
+			font-size: var(--mz-small);
+			line-height: 1.5;
+			text-decoration: none;
+			transition: background 0.2s ease;
+
+			&::before,
+			&::after {
+				position: absolute;
+				top: var(--mz-row);
+				line-height: 1;
+			}
+
+			&::before {
+				left: 0;
+				content: "↗";
+				transition: transform 0.25s ease;
+				color: $blue;
+				font: 700 var(--mz-deck) $display;
+				line-height: 1;
+			}
+
+			&::after {
+				right: 0;
+				content: "→";
+				color: $blue;
+				font: 600 var(--mz-small) $label;
+				line-height: 1;
+				transition: transform 0.25s ease;
+			}
+
+			// Hover tints the row and nudges its arrows; the text never moves, so it can't rewrap.
+			&:hover {
+				background: linear-gradient(to right, rgb(59 91 169 / 7%), rgb(59 91 169 / 0%));
+
+				&::before {
+					transform: translateX(var(--mz-space-1));
+				}
+
+
+				&::after {
+					transform: translateX(var(--mz-space-1));
+				}
+			}
+		}
+
+		strong {
+			display: block;
+			margin-bottom: var(--mz-space-1);
+			color: $page-ink;
+			font: 700 var(--mz-small) $label;
+			line-height: 1.3;
+		}
+	}
+
+	// The Code & live links block (a plugin block with plain structure), designed for the magazine: a ruled
+	// bar of small capitals.
+	.wp-block-akashsrma-project-links {
+
+		@include label-caps(var(--mz-action));
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--mz-space-2) var(--mz-space-4);
+		border-top: 1px solid $page-ink;
+		border-bottom: 1px solid $rule;
+		letter-spacing: 0.1em;
+		margin-top: var(--mz-kicker-gap);
+		margin-bottom: 0;
+		padding: var(--mz-space-2) 0;
+
+		.project-links__a {
+			color: $blue;
+			text-decoration: none;
+
+			&:hover {
+				color: $blue-dark;
+			}
+		}
+
+		.project-links__note {
+
+			@include label-caps(var(--mz-micro));
+			max-width: none;
+			margin: 0;
+			color: $grey;
+			font-weight: 600;
+			letter-spacing: 0.1em;
+		}
+	}
+}

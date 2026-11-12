@@ -1,0 +1,1168 @@
+// The Magazine block, 1:1 with the design prototype. Base styles are the scrolling edition (phones,
+// tablets, no JavaScript); `.is-book`, set by book.js on wide landscape screens, turns the same markup
+// into the two-page magazine. Page type is sized in container units (cqw: 1% of the page width) so a
+// page scales like print.
+
+@use "content" as *;
+
+// Stage colours change with dark mode; pages stay paper.
+.magazine {
+	--m-ink: #1b1a17;
+	--m-ink-rgb: 27, 26, 23;
+	--m-link: #{$blue};
+	--m-link-hover: #{$blue-dark};
+	--m-stage: radial-gradient(110% 85% at 50% 40%, #f4f1eb 0%, #e6e0d6 100%);
+	--m-reader: #ede8e0;
+
+	color: var(--m-ink);
+	font-family: $body;
+
+	&.is-dark {
+		--m-ink: #ece8e0;
+		--m-ink-rgb: 236, 232, 224;
+		--m-link: #9db3e6;
+		--m-link-hover: #c3d2f2;
+		--m-stage: radial-gradient(110% 85% at 50% 40%, #2b2520 0%, #16120f 100%);
+		--m-reader: #1a1613;
+	}
+
+	// Zero-specificity resets, so every component's own font and colour win.
+	:where(a) {
+		color: inherit;
+		text-decoration: none;
+	}
+
+	:where(button) {
+		font: inherit;
+		color: inherit;
+	}
+
+	:focus-visible {
+		outline: 2px solid #3d5afe;
+		outline-offset: 3px;
+	}
+}
+
+// ---------- header, intro, footer ----------
+
+.magazine__head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	box-sizing: border-box;
+	height: 76px;
+	padding: 0 16px;
+}
+
+.magazine__wordmark {
+	padding: 8px 0;
+	border: none;
+	background: none;
+	cursor: pointer;
+	font-family: $display;
+	font-size: 20px;
+	font-weight: 800;
+	letter-spacing: -0.01em;
+}
+
+.magazine__actions {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+}
+
+.magazine__close {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	box-sizing: border-box;
+	min-height: 40px;
+	padding: 9px 18px 9px 14px;
+	border: 1px solid rgba(var(--m-ink-rgb), 0.35);
+	border-radius: 999px;
+	background: transparent;
+	cursor: pointer;
+	font: 600 13px/1 $label;
+	letter-spacing: 0.04em;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.3s ease, background 0.15s ease;
+
+	&.is-visible {
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	&:hover {
+		background: rgb(127 127 127 / 12%);
+	}
+}
+
+.magazine__theme {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	padding: 0;
+	border: 1px solid rgba(var(--m-ink-rgb), 0.16);
+	border-radius: 50%;
+	background: transparent;
+	cursor: pointer;
+}
+
+.magazine__icon-sun,
+.magazine.is-dark .magazine__icon-moon {
+	display: none;
+}
+
+.magazine.is-dark .magazine__icon-sun {
+	display: block;
+}
+
+.magazine__intro-kicker {
+	margin: 0 0 24px;
+	color: rgba(var(--m-ink-rgb), 0.64);
+	font: 700 11px/1 $label;
+	letter-spacing: 0.22em;
+	text-transform: uppercase;
+}
+
+.magazine__intro-head {
+	margin: 0 0 24px;
+	color: var(--m-ink);
+	font-family: $display;
+	font-size: clamp(40px, 4.4vw, 72px);
+	font-weight: 800;
+	line-height: 0.96;
+	letter-spacing: -0.025em;
+}
+
+.magazine__intro-deck {
+	max-width: 30ch;
+	margin: 0 0 36px;
+	color: rgba(var(--m-ink-rgb), 0.76);
+	font-size: clamp(17px, 1.35vw, 20px);
+	line-height: 1.55;
+}
+
+.magazine__intro-hint {
+	margin: 0;
+	color: rgba(var(--m-ink-rgb), 0.64);
+	font: 500 13px/1.6 $label;
+	letter-spacing: 0.04em;
+}
+
+.magazine__intro-link {
+	padding: 0;
+	border: none;
+	border-bottom: 1px solid currentcolor;
+	background: none;
+	cursor: pointer;
+	color: var(--m-link) !important;
+	font: 700 13px/1.6 $label;
+	letter-spacing: 0.04em;
+	transition: color 0.15s ease;
+
+	&:hover {
+		color: var(--m-link-hover) !important;
+	}
+}
+
+.magazine__foot {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	box-sizing: border-box;
+	height: 56px;
+	padding: 0 16px;
+	color: rgba(var(--m-ink-rgb), 0.64);
+	font: 500 11.5px/1 $label;
+	letter-spacing: 0.04em;
+}
+
+// ---------- the cover ----------
+
+.magazine__cover {
+	position: relative;
+	overflow: hidden;
+	background: #d8cdb8;
+	color: #1b1a17;
+	container-type: inline-size;
+}
+
+.magazine__cover-photo {
+	position: absolute;
+	inset: 0;
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	pointer-events: none;
+}
+
+.magazine__cover-top {
+	position: absolute;
+	inset: 0 0 auto;
+	z-index: 2;
+	box-sizing: border-box;
+	padding: 5.5cqw 6cqw 0 7.5cqw;
+}
+
+.magazine__cover-date {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 1.6cqw;
+	font: 700 1.5cqw/1 $label;
+	letter-spacing: 0.22em;
+	text-transform: uppercase;
+}
+
+.magazine__masthead {
+	margin: 0;
+	color: #1b1a17;
+	font-family: $display;
+	font-size: 9.9cqw;
+	font-weight: 900;
+	line-height: 0.86;
+	letter-spacing: -0.04em;
+	text-align: center;
+	white-space: nowrap;
+}
+
+.magazine__cover-issue {
+	position: absolute;
+	right: 7cqw;
+	bottom: 5.5cqw;
+	z-index: 2;
+	text-align: right;
+}
+
+.magazine__cover-issue-tag {
+	display: block;
+	margin-bottom: 0.6cqw;
+	font: 700 1.5cqw/1 $label;
+	letter-spacing: 0.24em;
+	text-transform: uppercase;
+}
+
+.magazine__cover-issue-no {
+	display: block;
+	font-family: $display;
+	font-size: 14cqw;
+	font-weight: 500;
+	line-height: 0.8;
+	letter-spacing: -0.04em;
+}
+
+.magazine__barcode {
+	position: absolute;
+	left: 7.5cqw;
+	bottom: 5.5cqw;
+	z-index: 2;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.6cqw;
+	padding: 1.4cqw 1.6cqw 1cqw;
+	background: #fff;
+	box-shadow: 0 0 0 1px rgb(27 26 23 / 6%);
+
+	svg {
+		display: block;
+		width: 17cqw;
+		height: 7.5cqw;
+	}
+
+	span {
+		color: #111;
+		font: 600 1.35cqw/1 "IBM Plex Mono", "Courier New", monospace;
+		letter-spacing: 0.12em;
+	}
+}
+
+// The scored hinge near the spine of a perfect-bound cover, and the laminate's gloss.
+.magazine__cover-fold {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 3;
+	width: 4.5cqw;
+	pointer-events: none;
+	background: linear-gradient(to right, rgb(27 20 10 / 26%) 0, rgb(27 20 10 / 8%) 22%, rgb(255 255 255 / 35%) 46%, rgb(27 20 10 / 14%) 54%, rgb(27 20 10 / 3%) 72%, rgb(27 20 10 / 0%) 100%);
+}
+
+.magazine__cover-gloss {
+	position: absolute;
+	inset: 0;
+	z-index: 3;
+	pointer-events: none;
+	background: linear-gradient(118deg, rgb(255 255 255 / 0%) 26%, rgb(255 255 255 / 30%) 42%, rgb(255 255 255 / 6%) 52%, rgb(255 255 255 / 0%) 60%), radial-gradient(140% 100% at 50% 50%, rgb(0 0 0 / 0%) 62%, rgb(27 20 10 / 10%) 100%);
+}
+
+// ---------- a page and the blocks inside it ----------
+// Type, spacing and every block's look come from _content.scss; this part is only the page itself.
+
+.magazine__page {
+
+	@include reader-tokens;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	box-sizing: border-box;
+	padding: var(--mz-pad-top) var(--mz-pad-side) var(--mz-pad-bottom);
+	overflow: hidden;
+	background: $paper;
+	color: $page-ink;
+	container-type: inline-size;
+}
+
+.magazine__runhead,
+.magazine__folio {
+	display: flex;
+	flex: 0 0 auto;
+	color: $grey;
+	font: 600 var(--mz-micro) $label;
+	line-height: 1;
+	letter-spacing: 0.2em;
+	text-transform: uppercase;
+
+	.magazine__page--right & {
+		justify-content: flex-end;
+	}
+}
+
+.magazine__runhead {
+	margin: 0 0 7cqw;
+}
+
+.magazine__folio {
+	margin: 16px 0 0;
+	letter-spacing: 0.18em;
+}
+
+.magazine__gloss,
+.magazine__gutter {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
+
+.magazine__gloss {
+	background: linear-gradient(118deg, rgb(255 255 255 / 0%) 30%, rgb(255 255 255 / 16%) 46%, rgb(255 255 255 / 0%) 58%);
+}
+
+.magazine__page-body {
+
+	@include content;
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	min-height: 0;
+
+	// Editors see where a page's content runs past its foot (book.js measures it): add a Page Break there.
+	&.is-overflowing {
+		outline: 2px dashed #d6402b;
+		outline-offset: 4px;
+	}
+}
+
+// A picture that bleeds off the top and sides of the page; it takes the space the text leaves. The short
+// style (or the older `is-short` class) keeps it to part of the page.
+.magazine__page-body :is(.is-style-bleed, .is-style-bleed-short) {
+	position: relative;
+	flex: 1 1 auto;
+	min-height: 0;
+	max-width: none;
+	margin: calc(var(--mz-bleed-y) * -1) calc(var(--mz-bleed-x) * -1) var(--mz-bleed-gap);
+
+	// Share of the page's whole text column (the body plus the folio line), as in the print layout.
+	&.is-short,
+	&.is-style-bleed-short {
+		flex: 0 0 calc((100% + 16px + var(--mz-micro)) * 0.3);
+	}
+
+	&.is-video:is(.is-short, .is-style-bleed-short) {
+		flex-basis: calc((100% + 16px + var(--mz-micro)) * 0.42);
+	}
+
+	// A tint holds the picture's place until it loads, or if it is missing.
+	background: #e9e2d3;
+
+	img {
+		position: absolute;
+		inset: 0;
+		display: block;
+		width: 100%;
+		height: 100%;
+		max-height: none;
+		object-fit: cover;
+	}
+}
+
+// Section indexes, generated by inc/Magazine.php: each row turns to its post.
+.magazine-index {
+	display: flex;
+	flex-direction: column;
+	max-width: none;
+	border-top: 1px solid $page-ink;
+}
+
+.magazine-index__item {
+	display: grid;
+	grid-template-columns: 8cqw minmax(0, 1fr) 4cqw;
+	align-items: start;
+	gap: var(--mz-row);
+	padding: var(--mz-row) 0;
+	border-bottom: 1px solid $rule;
+	color: $page-ink;
+	transition: background 0.2s ease;
+
+	// The row's content slides on hover with a transform, never a size change, so text can't rewrap.
+	> :not(.magazine-index__arrow) {
+		transition: transform 0.25s ease;
+	}
+
+	&:hover {
+		background: linear-gradient(to right, rgb(59 91 169 / 7%), rgb(59 91 169 / 0%));
+
+		> :not(.magazine-index__arrow) {
+			transform: translateX(var(--mz-space-1));
+		}
+	}
+}
+
+.magazine-index--thumbs .magazine-index__item {
+	grid-template-columns: 15cqw 6cqw minmax(0, 1fr) 4cqw;
+	padding: 2cqw 0;
+}
+
+.magazine-index__thumb {
+	display: block;
+	width: 100%;
+	height: auto;
+	aspect-ratio: 1;
+	object-fit: cover;
+	box-shadow: inset 0 0 0 1px rgb(0 0 0 / 6%);
+}
+
+// A post with no featured image: a paper-tinted tile with its title's first letter.
+.magazine-index__thumb--empty {
+	display: grid;
+	place-items: center;
+	background: #e9e2d3;
+	color: $grey;
+	font-family: $display;
+	font-size: var(--mz-num);
+	font-style: italic;
+	font-weight: 700;
+	line-height: 1;
+}
+
+.magazine-index__num {
+	color: $blue;
+	font-family: $display;
+	font-size: var(--mz-num);
+	font-style: italic;
+	font-weight: 700;
+	line-height: 1;
+}
+
+.magazine-index__body {
+	display: flex;
+	flex-direction: column;
+	gap: var(--mz-space-1);
+	min-width: 0;
+}
+
+.magazine-index__head {
+	font: 700 var(--mz-small) $label;
+	line-height: 1.3;
+}
+
+.magazine-index__text {
+	color: $soft-text;
+	font-size: var(--mz-small);
+	line-height: 1.5;
+}
+
+.magazine-index__arrow {
+	justify-self: end;
+	padding-top: 0.4cqw;
+	color: $blue;
+	font: 600 var(--mz-small) $label;
+	line-height: 1;
+	transition: transform 0.25s ease;
+}
+
+.magazine-index__item:hover .magazine-index__arrow {
+	transform: translateX(var(--mz-space-1));
+}
+
+.magazine-empty {
+	color: $grey;
+}
+
+// Page links at the foot of a post's spread.
+.magazine-pnav {
+	display: flex;
+	justify-content: space-between;
+	gap: var(--mz-space-3);
+	margin-top: auto;
+	padding-top: var(--mz-kicker-gap);
+}
+
+.magazine-pnav__a {
+
+	@include label-caps(var(--mz-action));
+	padding: 0.6cqw 0;
+	border-bottom: 1px solid currentcolor;
+	color: $blue !important;
+	letter-spacing: 0.08em;
+
+	&:hover {
+		color: $blue-dark !important;
+	}
+}
+
+// "Continued from page N" at the top of a continued spread, a size below the kickers. The scrolling edition
+// swipes through a story's pages, so it shows neither that label nor the book's page links.
+.magazine__page-body .magazine-cont {
+	font-size: var(--mz-micro);
+}
+
+.magazine:not(.is-book) {
+
+	.magazine-cont,
+	.magazine-pnav {
+		display: none;
+	}
+}
+
+// A filler page: one illustration across the page, no running head, text or folio.
+.magazine__page--filler {
+	padding: 0;
+
+	.magazine__page-body,
+	.magazine__folio {
+		display: none;
+	}
+}
+
+// A filler page with no illustration set (Magazine → Settings) is a plain tinted page.
+.magazine__page--filler:not(:has(.magazine__filler-image)) {
+	background: #e9e2d3;
+}
+
+.magazine__filler-image {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+// ---------- the bookmarks ----------
+
+.magazine__tab {
+	display: block;
+	box-sizing: border-box;
+	padding: 12px;
+	border-radius: 1px 3px 3px 1px;
+	box-shadow: 0 1px 1px rgb(27 26 23 / 10%), 1px 3px 6px -2px rgb(27 26 23 / 16%);
+	color: #1b1a17 !important;
+	font: 700 10.5px/1 $label;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+}
+
+// The scrolling edition's story rows mean nothing to the book: their pages lay out as before.
+.magazine.is-book {
+
+	.magazine__story,
+	.magazine__row {
+		display: contents;
+	}
+
+	.magazine__dots {
+		display: none;
+	}
+}
+
+// Engine-made and book-only parts.
+.magazine__leaves,
+.magazine__cast,
+.magazine__grip,
+.magazine__under,
+.magazine__spine,
+.magazine__gutter,
+.magazine__gloss {
+	display: none;
+}
+
+// ---------- the scrolling edition (phones, tablets, no JavaScript) ----------
+
+.magazine:not(.is-book) {
+	min-height: 100vh;
+	padding-bottom: 5rem;
+	background: var(--m-reader);
+
+	.magazine__close,
+	.magazine__intro-hint,
+	.magazine__foot span:last-child {
+		display: none;
+	}
+
+	.magazine__intro {
+		padding: 2rem 16px 1.5rem;
+	}
+
+	// Pages are never wider than a desktop book page (~560px): on a tablet that keeps a page's fill the same
+	// as on desktop, instead of a tall page with a short column of text. Narrower screens use their full width.
+	.magazine__cover {
+		box-sizing: border-box;
+		width: min(100% - 32px, 560px);
+		height: auto;
+		aspect-ratio: 0.77;
+		max-height: calc(100svh - 76px);
+		margin: 0 auto;
+	}
+
+	.magazine__spreads {
+		padding: 0;
+	}
+
+	// Each story is a row of pages that swipes sideways, one page per swipe: the browser's own scroll snapping,
+	// with every page a stop, so a short drag springs back and a flick never skips a page. On a phone a page
+	// fills the width with a sliver of its neighbours showing; on a tablet it sits centred at a desktop page's
+	// size, its neighbours in the space either side.
+	.magazine__story {
+		position: relative;
+		margin-top: 14px;
+		scroll-margin-top: 1rem;
+	}
+
+	.magazine__row {
+		--swipe-pad: 20px;
+		--swipe-gap: 10px;
+		--swipe-page: calc(100vw - 40px);
+		--swipe-min: calc(100svh - 160px); // a phone page, its dots and the bookmarks fit on screen together
+
+		position: relative;
+		display: flex;
+		align-items: stretch;
+		gap: var(--swipe-gap);
+		padding: 4px var(--swipe-pad) 28px;
+		overflow-x: auto;
+		overscroll-behavior-x: contain;
+		scroll-padding-inline: var(--swipe-pad);
+		scroll-snap-type: x mandatory;
+		scrollbar-width: none;
+
+		&::-webkit-scrollbar {
+			display: none;
+		}
+	}
+
+	.magazine__spread {
+		display: contents;
+	}
+
+	// Every page is its own sheet in the book's proportions, with its running head and folio; a page with
+	// more than fits grows rather than cutting its content off.
+	// The book's proportions as a minimum height (a fixed aspect ratio would stop a sideways row's page growing).
+	.magazine__page {
+		flex: 0 0 var(--swipe-page);
+		min-height: max(calc(var(--swipe-page) / 0.77), var(--swipe-min));
+		overflow: visible;
+		box-shadow: 0 12px 30px -14px rgb(0 0 0 / 30%);
+		scroll-snap-align: center;
+		scroll-snap-stop: always;
+	}
+
+	// Page dots: where the reader is in the story; each one turns to its page. They stay in view above the
+	// bookmarks while the story is read, however tall its pages.
+	.magazine__dots {
+		position: sticky;
+		bottom: calc(68px + env(safe-area-inset-bottom));
+		z-index: 3;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 2px;
+		width: fit-content;
+		max-width: calc(100% - 32px);
+		margin: -16px auto 0;
+		padding: 2px 8px;
+		border-radius: 999px;
+		background: color-mix(in srgb, var(--m-reader) 85%, transparent);
+		backdrop-filter: blur(8px);
+		transition: opacity 0.25s ease, visibility 0.25s;
+	}
+
+	// Only the story being read shows its dots.
+	.magazine__story:not(.is-reading) .magazine__dots {
+		visibility: hidden;
+		opacity: 0;
+	}
+
+	.magazine__dot {
+		display: grid;
+		place-items: center;
+		width: 24px;
+		height: 24px;
+		padding: 0;
+		border: 0;
+		background: none;
+		cursor: pointer;
+
+		&::before {
+			content: "";
+			width: 6px;
+			height: 6px;
+			border-radius: 3px;
+			background: rgba(var(--m-ink-rgb), 0.25);
+			transition: width 0.25s ease, background 0.25s ease;
+		}
+
+		&[aria-current]::before {
+			width: 18px;
+			background: var(--m-ink);
+		}
+	}
+
+	// Tablets: the page sits centred at a desktop page's size, its neighbours in the space either side.
+	@media (min-width: 700px) {
+
+		.magazine__row {
+			--swipe-pad: calc(50% - 280px);
+			--swipe-gap: 28px;
+			--swipe-page: 560px;
+			--swipe-min: 0px;
+		}
+	}
+
+	// Without JavaScript the rows still swipe; the dots need it.
+	&:not(.has-swipe) .magazine__dots {
+		display: none;
+	}
+
+	.magazine__page-body :is(.is-style-bleed, .is-style-bleed-short) {
+		min-height: calc(var(--mz-bleed) * 0.6);
+	}
+
+	.magazine__runhead {
+		margin-bottom: 5cqw;
+	}
+
+	.magazine__tabs {
+		position: fixed;
+		inset: auto 0 0;
+		z-index: 40;
+		display: grid;
+		grid-auto-columns: minmax(0, 1fr);
+		grid-auto-flow: column;
+		gap: 8px;
+		padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+		background: color-mix(in srgb, var(--m-reader) 88%, transparent);
+		backdrop-filter: blur(10px);
+	}
+
+	// Four bookmarks share a phone's width: tighter type, and a label too long for its tab ends in "…".
+	.magazine__tab {
+		overflow: hidden;
+		padding: 11px 4px;
+		background-color: var(--magazine-flag);
+		font-size: 10px;
+		letter-spacing: 0.06em;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+
+		@media (max-width: 340px) {
+			padding-inline: 2px;
+			letter-spacing: 0.01em;
+		}
+		rotate: var(--magazine-tilt);
+		text-align: center;
+		opacity: 0.85;
+
+		&.is-active {
+			opacity: 1;
+		}
+	}
+}
+
+// ---------- the book ----------
+
+.has-magazine-book {
+	overflow: hidden;
+}
+
+.magazine.is-book {
+	position: fixed;
+	inset: 0;
+	overflow: hidden;
+	background: var(--m-stage);
+	transition: background 0.3s ease;
+
+	&:focus {
+		outline: none;
+	}
+
+	.magazine__head {
+		position: absolute;
+		inset: 0 0 auto;
+		z-index: 60;
+	}
+
+	.magazine__foot {
+		position: absolute;
+		inset: auto 0 0;
+		z-index: 4;
+	}
+
+	// The intro sits where the left page will land, so opening the issue covers it.
+	.magazine__intro {
+		position: absolute;
+		top: calc(var(--magazine-top) + var(--magazine-height) / 2);
+		left: calc(var(--magazine-left) + var(--magazine-page) * 0.08);
+		z-index: 1;
+		width: calc(var(--magazine-page) * 0.8);
+		transform: translateY(-50%);
+		transition: opacity 450ms ease, translate 650ms cubic-bezier(0.3, 0.7, 0.3, 1);
+	}
+
+	&:not(.is-closed) .magazine__intro {
+		opacity: 0;
+		translate: -28px 0;
+		pointer-events: none;
+	}
+
+	&.is-closing .magazine__intro {
+		transition-delay: 600ms;
+	}
+
+	.magazine__spreads {
+		position: absolute;
+		top: var(--magazine-top);
+		left: var(--magazine-left);
+		z-index: 5;
+		width: calc(var(--magazine-page) * 2);
+		height: var(--magazine-height);
+		perspective: 2800px;
+		pointer-events: none;
+	}
+
+	// Moved inside .magazine__spreads by book.js: it covers the right half of the book.
+	.magazine__cover {
+		position: absolute;
+		top: 0;
+		left: 50%;
+		z-index: 10;
+		width: 50%;
+		height: 100%;
+		border-radius: 0 2px 2px 0;
+		pointer-events: auto;
+
+		&.is-lifted {
+			visibility: hidden;
+		}
+	}
+
+	.magazine__spread {
+		display: contents;
+	}
+
+	// A magazine is thin: a few px of page edge, sharp corners; the drop shadows live on underlays.
+	// The page's own padding can't use cqw (that would measure the window), so it uses the page width.
+	.magazine__page {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		z-index: 2;
+
+		@include book-tokens;
+		width: 50%;
+		visibility: hidden;
+		pointer-events: auto;
+
+		&.is-shown {
+			visibility: visible;
+		}
+
+		// A turning page's copy takes its face's visibility: book.js hides the face pointing away,
+		// and an explicit `visible` here would let the back of the page show through, mirrored.
+		&.is-clone {
+			inset: 0;
+			width: 100%;
+			visibility: inherit;
+			box-shadow: none;
+		}
+	}
+
+	.magazine__page--left {
+		left: 0;
+		border-radius: 2px 0 0 2px;
+		box-shadow: -1px 0 0 #eeeae2, -2px 1px 0 #e3ded3, -3px 2px 0 #d9d2c4;
+	}
+
+	.magazine__page--right {
+		left: 50%;
+		border-radius: 0 2px 2px 0;
+		box-shadow: 1px 0 0 #eeeae2, 2px 1px 0 #e3ded3, 3px 2px 0 #d9d2c4;
+	}
+
+	.magazine__gloss,
+	.magazine__gutter {
+		display: block;
+	}
+
+	// Pages bow up out of the spine: deep soft shade at the fold, a faint highlight at the outer edge.
+	.magazine__page--left .magazine__gutter {
+		background: linear-gradient(to left, rgb(20 16 10 / 26%) 0%, rgb(20 16 10 / 11%) 2.5%, rgb(20 16 10 / 4%) 8%, rgb(20 16 10 / 0%) 17%), linear-gradient(to right, rgb(255 255 255 / 45%) 0, rgb(255 255 255 / 0%) 1.4%);
+	}
+
+	.magazine__page--right .magazine__gutter {
+		background: linear-gradient(to right, rgb(20 16 10 / 26%) 0%, rgb(20 16 10 / 11%) 2.5%, rgb(20 16 10 / 4%) 8%, rgb(20 16 10 / 0%) 17%), linear-gradient(to left, rgb(255 255 255 / 45%) 0, rgb(255 255 255 / 0%) 1.4%);
+	}
+
+	.magazine__under {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		z-index: 1;
+		display: block;
+		width: 50%;
+		pointer-events: none;
+	}
+
+	.magazine__under--left {
+		left: 0;
+		border-radius: 2px 0 0 2px;
+		box-shadow: 0 1px 2px rgb(0 0 0 / 10%), -6px 10px 18px -8px rgb(0 0 0 / 22%), -14px 34px 56px -22px rgb(0 0 0 / 42%);
+		opacity: 0;
+	}
+
+	&.has-left .magazine__under--left {
+		opacity: 1;
+	}
+
+	.magazine__under--right {
+		left: 50%;
+		border-radius: 0 2px 2px 0;
+		box-shadow: 0 1px 2px rgb(0 0 0 / 10%), 6px 10px 18px -8px rgb(0 0 0 / 22%), 14px 34px 56px -22px rgb(0 0 0 / 42%);
+	}
+
+	// The fold down the middle of an open magazine.
+	.magazine__spine {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 50%;
+		z-index: 3;
+		display: block;
+		width: 2px;
+		margin-left: -1px;
+		background: linear-gradient(to bottom, rgb(20 16 10 / 20%), rgb(20 16 10 / 10%) 50%, rgb(20 16 10 / 20%));
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 0.3s ease;
+	}
+
+	&.is-spread .magazine__spine {
+		opacity: 1;
+	}
+
+	// Turning pages: N hinged strips, each showing a slice of the page on either face.
+	// Turning pages never take the pointer, so the grab zones underneath keep receiving hover and clicks.
+	.magazine__leaves {
+		position: absolute;
+		inset: 0;
+		z-index: 30;
+		display: block;
+		transform-style: preserve-3d;
+		pointer-events: none;
+
+		* {
+			pointer-events: none;
+		}
+	}
+
+	.magazine__leaf {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		width: 50%;
+		transform-style: preserve-3d;
+	}
+
+	.magazine__leaf--fwd {
+		left: 50%;
+	}
+
+	.magazine__leaf--bwd {
+		left: 0;
+	}
+
+	.magazine__leaf--cover {
+		z-index: 50;
+	}
+
+	.magazine__strip {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		transform-style: preserve-3d;
+	}
+
+	.magazine__face {
+		position: absolute;
+		inset: 0;
+		overflow: hidden;
+		backface-visibility: hidden;
+	}
+
+	.magazine__face--back {
+		transform: rotateY(180deg);
+	}
+
+	.magazine__slice {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		container-type: inline-size;
+
+		> .magazine__cover {
+			position: absolute;
+			inset: 0;
+			width: 100%;
+			height: 100%;
+			visibility: inherit;
+		}
+	}
+
+	.magazine__shade {
+		position: absolute;
+		inset: 0;
+		z-index: 5;
+		pointer-events: none;
+	}
+
+	// The lifted page's shadow on the page it uncovers.
+	.magazine__cast {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		z-index: 3;
+		display: block;
+		width: 50%;
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	.magazine__cast--left {
+		left: 0;
+		background: linear-gradient(to left, rgb(0 0 0 / 22%), rgb(0 0 0 / 5%) 22%, rgb(0 0 0 / 0%) 45%);
+	}
+
+	.magazine__cast--right {
+		left: 50%;
+		background: linear-gradient(to right, rgb(0 0 0 / 22%), rgb(0 0 0 / 5%) 22%, rgb(0 0 0 / 0%) 45%);
+	}
+
+	// Grab zones along the outer edges: hover lifts a corner, a click turns the page.
+	.magazine__grip {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		z-index: 20;
+		display: block;
+		width: 56px;
+		cursor: pointer;
+		pointer-events: auto;
+
+		&[hidden] {
+			display: none;
+		}
+	}
+
+	.magazine__grip--next {
+		right: 0;
+	}
+
+	.magazine__grip--prev {
+		left: 0;
+	}
+
+	.magazine__grip--cover {
+		right: 0;
+		left: 50%;
+		z-index: 55;
+		width: auto;
+		cursor: pointer;
+	}
+
+	// Post-it bookmarks, tucked between the pages on the right edge.
+	.magazine__tabs {
+		position: absolute;
+		top: calc(var(--magazine-top) + var(--magazine-height) * 0.14);
+		left: calc(var(--magazine-left) + var(--magazine-page) * 2);
+		z-index: 4;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 14px;
+	}
+
+	.magazine__tab {
+		width: 142px;
+		margin-left: -34px;
+		padding-left: 46px;
+		transform: rotate(var(--magazine-tilt));
+		transform-origin: left center;
+		transition: margin-left 0.35s cubic-bezier(0.3, 0.7, 0.3, 1), box-shadow 0.35s ease;
+
+		&:hover {
+			margin-left: -24px;
+			box-shadow: 0 1px 1px rgb(27 26 23 / 12%), 2px 5px 10px -3px rgb(27 26 23 / 22%);
+		}
+
+		&.is-active,
+		&.is-active:hover {
+			margin-left: -12px;
+			box-shadow: 0 1px 1px rgb(27 26 23 / 14%), 3px 6px 12px -3px rgb(27 26 23 / 26%);
+		}
+	}
+}
+
+// Small desktop windows (≈1024px): book pages are only ~410px wide, so tighten instead of spilling.
+@container (max-width: 440px) {
+
+	.magazine.is-book .magazine__page-body {
+
+		@include book-tokens-compact;
+	}
+
+	.magazine.is-book .magazine__runhead {
+		margin-bottom: 5cqw;
+	}
+
+	.magazine.is-book .magazine-index--thumbs .magazine-index__item {
+		padding: 1.4cqw 0;
+	}
+
+	.magazine.is-book .magazine-index__text {
+		font-size: 11.5px;
+		line-height: 1.45;
+	}
+
+	.magazine.is-book .wp-block-akashsrma-project-links {
+		margin-top: 2cqw;
+		padding: 1.6cqw 0;
+	}
+
+	.magazine.is-book .magazine-pnav {
+		padding-top: 2cqw;
+	}
+}

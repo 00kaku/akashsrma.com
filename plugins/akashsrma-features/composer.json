@@ -1,0 +1,14 @@
+{
+	"name": "akashsrma/akashsrma-features",
+	"description": "What akashsrma.com holds, whatever its theme. Composer is used only for its PSR-4 autoloader.",
+	"type": "wordpress-plugin",
+	"license": "GPL-2.0-or-later",
+	"require": {
+		"php": ">=8.2"
+	},
+	"autoload": {
+		"psr-4": {
+			"Akashsrma\\Features\\": "inc/"
+		}
+	}
+}

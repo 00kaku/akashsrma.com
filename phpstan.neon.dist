@@ -1,0 +1,10 @@
+# Static analysis; WordPress functions and hooks come from szepeviktor/phpstan-wordpress.
+parameters:
+	level: 6
+	paths:
+		- plugins/akashsrma-features
+		- themes/magazine
+	excludePaths:
+		- */build/*
+		- */node_modules/*
+		- */vendor/*

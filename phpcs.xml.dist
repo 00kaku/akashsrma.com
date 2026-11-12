@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<ruleset name="akashsrma">
+	<description>WordPress coding standards for the Magazine theme, the Akashsrma Features plugin and their tests.</description>
+
+	<file>plugins/akashsrma-features</file>
+	<file>themes/magazine</file>
+	<file>tests/php</file>
+	<exclude-pattern>*/build/*</exclude-pattern>
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+
+	<arg name="extensions" value="php"/>
+	<arg name="colors"/>
+	<arg value="sp"/>
+
+	<!-- Hostinger runs PHP 8.2+; WordPress 6.8+ for block metadata collections. -->
+	<config name="testVersion" value="8.2-"/>
+	<config name="minimum_wp_version" value="6.8"/>
+
+	<rule ref="WordPress-Extra"/>
+	<rule ref="WordPress-Docs"/>
+	<rule ref="PHPCompatibilityWP"/>
+
+	<!-- Classes live in PSR-4 style files (Plugin.php), not class-plugin.php. -->
+	<rule ref="WordPress.Files.FileName">
+		<properties>
+			<property name="strict_class_file_names" value="false"/>
+		</properties>
+		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
+	</rule>
+
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="akashsrma-features"/>
+				<element value="magazine"/>
+			</property>
+		</properties>
+	</rule>
+
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="akashsrma"/>
+				<element value="Akashsrma"/>
+				<element value="magazine"/>
+				<element value="Magazine"/>
+			</property>
+		</properties>
+	</rule>
+</ruleset>
