@@ -9,10 +9,12 @@
 # fast-forwards the server's checkout to the branch and purges the cache. Run this workflow by hand
 # with `rollback` to return a site to the commit that was live before its last deploy.
 #
-# Secrets (Settings → Secrets and variables → Actions):
-#   SSH_HOST, SSH_PORT, SSH_USER   Hostinger's SSH login                 (repository secrets)
-#   SSH_PRIVATE_KEY                that site's forced-command deploy key (environment secret)
-# Without them the deploy job skips itself.
+# Repository secrets (Settings → Secrets and variables → Actions):
+#   SSH_HOST, SSH_PORT, SSH_USER   Hostinger's SSH login
+#   SSH_KEY_PRODUCTION             forced-command deploy key for akashsrma.com (master)
+#   SSH_KEY_STAGING                forced-command deploy key for staging.akashsrma.com (staging)
+# Each site has its own key because the key's forced command names the site. Without them the
+# deploy job skips itself.
 
 name: CI
 
@@ -106,7 +108,6 @@ jobs:
       (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/staging')
     needs: [checks, phpunit, build]
     runs-on: ubuntu-latest
-    environment: ${{ github.ref == 'refs/heads/master' && 'production' || 'staging' }}
     concurrency:
       group: deploy-${{ github.ref }}
       cancel-in-progress: false
@@ -114,7 +115,7 @@ jobs:
       SSH_HOST: ${{ secrets.SSH_HOST }}
       SSH_PORT: ${{ secrets.SSH_PORT }}
       SSH_USER: ${{ secrets.SSH_USER }}
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SSH_PRIVATE_KEY: ${{ github.ref == 'refs/heads/master' && secrets.SSH_KEY_PRODUCTION || secrets.SSH_KEY_STAGING }}
       ACTION: ${{ inputs.action || 'pull' }}
     steps:
       - name: Check deploy settings
