@@ -9,6 +9,7 @@
  * Author URI:        https://akashsrma.com
  * License:           GPL-2.0-or-later
  * Text Domain:       akashsrma-features
+ * Update URI:        https://akashsrma.com
  *
  * @package Akashsrma\Features
  */
