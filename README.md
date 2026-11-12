@@ -62,7 +62,8 @@ Either package runs without the other. Without the plugin, the theme shows its c
 │   ├── akashsrma-features.php      bootstrap
 │   ├── config/                     content model as data
 │   ├── inc/                        Core/, Content/, Admin/, Blocks/: one class per job
-│   ├── src/blocks/                 block sources (built to build/blocks)
+│   ├── src/blocks/                 block sources
+│   ├── build/, vendor/             built blocks and Composer autoloader (committed; CI-verified)
 │   └── assets/                     Sections screen script and styles
 ├── themes/magazine/
 │   ├── theme.json, style.css       design tokens; theme header
@@ -112,9 +113,11 @@ npm run env:start        # http://localhost:8890 (admin / password); tests site 
 [`ci.yml`](.github/workflows/ci.yml) runs on every push and pull request:
 
 1. **Checks:** lint, static analysis and JS tests.
-2. **PHPUnit:** builds, starts WordPress on the runner and runs the integration tests.
-3. **Build:** packages the built theme and plugin, without block sources.
-4. **Deploy:** a push that passes all three is synced to Hostinger with rsync over SSH. Only the theme and plugin ship; nothing is built on the server.
+2. **PHPUnit:** starts WordPress on the runner and runs the integration tests.
+3. **Build check:** the host has no build step, so each package's `build/` and `vendor/` (Composer autoloader) are committed. CI rebuilds them and fails if they differ from git.
+4. **Deploy:** a push to `master` that passes all three asks the server to deploy. The server backs up the database, fast-forwards its checkout to the branch and purges the page cache. The theme and plugin folders in `wp-content` link into that checkout, so the site runs exactly what's in git. The same workflow, run by hand, rolls back to the commit that was live before the last deploy.
+
+The deploy key can't open a shell: it's a forced-command key that can only run the deploy script for this site.
 
 ## License
 

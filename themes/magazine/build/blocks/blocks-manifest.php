@@ -1,0 +1,24 @@
+<?php
+// This file is generated. Do not modify it manually.
+return array(
+	'magazine' => array(
+		'$schema' => 'https://schemas.wp.org/trunk/block.json',
+		'apiVersion' => 3,
+		'name' => 'magazine/magazine',
+		'title' => 'Magazine',
+		'category' => 'theme',
+		'icon' => 'book',
+		'description' => 'The magazine: cover, contents and spreads. Rendered on the server; the Interactivity API store in view.js drives it in the browser.',
+		'textdomain' => 'magazine',
+		'supports' => array(
+			'html' => false,
+			'multiple' => false,
+			'interactivity' => true
+		),
+		'editorScript' => 'file:./index.js',
+		'editorStyle' => 'file:./index.css',
+		'style' => 'file:./style-index.css',
+		'viewScriptModule' => 'file:./view.js',
+		'render' => 'file:./render.php'
+	)
+);

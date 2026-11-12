@@ -1,13 +1,17 @@
-# Checks, tests and builds every push and pull request. A push that passes is deployed to Hostinger:
+# Checks, tests and builds every push and pull request. A push to a deploy branch that passes is
+# deployed to Hostinger:
 #   staging → the `staging` environment (staging.akashsrma.com)
 #   master  → the `production` environment (akashsrma.com)
 #
-# Deploy needs these secrets (Settings → Secrets and variables → Actions):
-#   SSH_HOST          Hostinger's SSH host                                     (repository secret)
-#   SSH_PORT          its SSH port (Hostinger uses 65002)                      (repository secret)
-#   SSH_USER          the SSH user                                             (repository secret)
-#   SSH_PRIVATE_KEY   a private key whose public half is added in hPanel → SSH Access (repository secret)
-#   WP_CONTENT_PATH   that site's wp-content folder, set in each environment (Settings → Environments)
+# The server can't build, so the packages' build/ and vendor/ are committed; the build job fails if
+# they differ from a fresh build. Deploying asks the server to pull: the deploy key is a
+# forced-command key that can only run `~/bin/deploy-pull <domain>`, which backs up the database,
+# fast-forwards the server's checkout to the branch and purges the cache. Run this workflow by hand
+# with `rollback` to return a site to the commit that was live before its last deploy.
+#
+# Secrets (Settings → Secrets and variables → Actions):
+#   SSH_HOST, SSH_PORT, SSH_USER   Hostinger's SSH login                 (repository secrets)
+#   SSH_PRIVATE_KEY                that site's forced-command deploy key (environment secret)
 # Without them the deploy job skips itself.
 
 name: CI
@@ -16,10 +20,20 @@ on:
   push:
     branches: [master, staging]
   pull_request:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: pull deploys the branch; rollback returns to the commit live before the last deploy
+        type: choice
+        options: [pull, rollback]
+        default: pull
+
+permissions:
+  contents: read
 
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   checks:
@@ -34,7 +48,7 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-          tools: composer
+          tools: composer:2.8.6
       - run: npm ci
       - run: composer install --no-interaction --no-progress
       - run: npm run lint
@@ -52,15 +66,14 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-          tools: composer
+          tools: composer:2.8.6
       - run: npm ci
       - run: composer install --no-interaction --no-progress
-      - run: npm run build
       - run: npm run env:start
       - run: npm run test:php
 
   build:
-    name: Build release
+    name: Committed build matches the source
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -71,58 +84,54 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-          tools: composer
+          # The same Composer as local builds, so the generated autoloaders match byte for byte.
+          tools: composer:2.8.6
       - run: npm ci
       - run: npm run build
-      # The release is the built theme and plugin, without block sources.
-      - name: Assemble release
+      - name: Compare with git
         run: |
-          mkdir -p release/themes release/plugins
-          rsync -a --exclude src --exclude node_modules themes/magazine release/themes/
-          rsync -a --exclude src --exclude node_modules plugins/akashsrma-features release/plugins/
-      - uses: actions/upload-artifact@v4
-        with:
-          name: release
-          path: release
-          retention-days: 14
+          changes=$(git status --porcelain -- plugins themes)
+          if [ -n "$changes" ]; then
+            echo "$changes"
+            git diff --stat -- plugins themes
+            echo "::error::build/ or vendor/ differ from a fresh build. Run 'npm run build' and commit the result."
+            exit 1
+          fi
+          echo "build/ and vendor/ match the source."
 
   deploy:
     name: Deploy to Hostinger (${{ github.ref_name }})
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/staging')
+    if: >-
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
+      (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/staging')
     needs: [checks, phpunit, build]
     runs-on: ubuntu-latest
     environment: ${{ github.ref == 'refs/heads/master' && 'production' || 'staging' }}
+    concurrency:
+      group: deploy-${{ github.ref }}
+      cancel-in-progress: false
     env:
       SSH_HOST: ${{ secrets.SSH_HOST }}
       SSH_PORT: ${{ secrets.SSH_PORT }}
       SSH_USER: ${{ secrets.SSH_USER }}
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-      WP_CONTENT_PATH: ${{ secrets.WP_CONTENT_PATH }}
+      ACTION: ${{ inputs.action || 'pull' }}
     steps:
       - name: Check deploy settings
         id: settings
         run: |
-          if [ -z "$SSH_HOST" ] || [ -z "$SSH_USER" ] || [ -z "$SSH_PRIVATE_KEY" ] || [ -z "$WP_CONTENT_PATH" ]; then
-            echo "::notice::Deploy skipped: add the SSH_* and WP_CONTENT_PATH secrets to enable it."
+          if [ -z "$SSH_HOST" ] || [ -z "$SSH_PORT" ] || [ -z "$SSH_USER" ] || [ -z "$SSH_PRIVATE_KEY" ]; then
+            echo "::notice::Deploy skipped: add the SSH_* secrets to enable it."
             echo "ready=false" >> "$GITHUB_OUTPUT"
           else
             echo "ready=true" >> "$GITHUB_OUTPUT"
           fi
-      - uses: actions/download-artifact@v4
-        if: steps.settings.outputs.ready == 'true'
-        with:
-          name: release
-          path: release
-      - name: Set up SSH
+      - name: Ask the server to ${{ env.ACTION }}
         if: steps.settings.outputs.ready == 'true'
         run: |
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_deploy
           chmod 600 ~/.ssh/id_deploy
-          ssh-keyscan -p "${SSH_PORT:-22}" "$SSH_HOST" >> ~/.ssh/known_hosts
-      - name: Upload theme and plugin
-        if: steps.settings.outputs.ready == 'true'
-        run: |
-          ssh_cmd="ssh -i ~/.ssh/id_deploy -p ${SSH_PORT:-22}"
-          rsync -az --delete -e "$ssh_cmd" release/themes/magazine/ "$SSH_USER@$SSH_HOST:$WP_CONTENT_PATH/themes/magazine/"
-          rsync -az --delete -e "$ssh_cmd" release/plugins/akashsrma-features/ "$SSH_USER@$SSH_HOST:$WP_CONTENT_PATH/plugins/akashsrma-features/"
+          ssh-keyscan -p "$SSH_PORT" "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+          # The key's forced command picks the site; the command sent here is only the action.
+          ssh -i ~/.ssh/id_deploy -p "$SSH_PORT" -o IdentitiesOnly=yes "$SSH_USER@$SSH_HOST" "$ACTION"

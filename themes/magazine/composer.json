@@ -6,6 +6,9 @@
 	"require": {
 		"php": ">=8.2"
 	},
+	"config": {
+		"autoloader-suffix": "Magazine"
+	},
 	"autoload": {
 		"psr-4": {
 			"Magazine\\": "inc/"

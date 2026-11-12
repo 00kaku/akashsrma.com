@@ -1,12 +1,9 @@
-# Dependencies and generated autoloaders (`npm install`, `composer install`, `npm run build`)
+# Dependencies (`npm install`, `composer install`)
 /node_modules/
 /vendor/
-/plugins/*/vendor/
-/themes/*/vendor/
 
-# Build output (rebuilt by `npm run build`; CI builds and deploys it)
-/plugins/*/build/
-/themes/*/build/
+# The packages' build/ and vendor/ (autoloaders) ARE committed: the server can't build, so it
+# deploys what git holds. CI fails if they differ from a fresh `npm run build`.
 /dist/
 *.zip
 
