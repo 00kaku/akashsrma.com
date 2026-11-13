@@ -16,6 +16,7 @@ return array(
     'Magazine\\Setup\\BlockStyles' => $baseDir . '/inc/Setup/BlockStyles.php',
     'Magazine\\Setup\\Blocks' => $baseDir . '/inc/Setup/Blocks.php',
     'Magazine\\Setup\\Fonts' => $baseDir . '/inc/Setup/Fonts.php',
+    'Magazine\\Setup\\ImageFocus' => $baseDir . '/inc/Setup/ImageFocus.php',
     'Magazine\\Setup\\Patterns' => $baseDir . '/inc/Setup/Patterns.php',
     'Magazine\\Setup\\Supports' => $baseDir . '/inc/Setup/Supports.php',
     'Magazine\\Theme' => $baseDir . '/inc/Theme.php',

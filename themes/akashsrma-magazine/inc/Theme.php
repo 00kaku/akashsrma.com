@@ -38,6 +38,7 @@ final class Theme {
 			new Setup\Supports(),
 			new Setup\Blocks(),
 			new Setup\BlockStyles(),
+			new Setup\ImageFocus(),
 			new Setup\Patterns(),
 			new Setup\Fonts(),
 			new Routing\MissingSpreads(),

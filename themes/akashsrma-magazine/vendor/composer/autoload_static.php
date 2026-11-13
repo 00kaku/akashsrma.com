@@ -31,6 +31,7 @@ class ComposerStaticInitMagazine
         'Magazine\\Setup\\BlockStyles' => __DIR__ . '/../..' . '/inc/Setup/BlockStyles.php',
         'Magazine\\Setup\\Blocks' => __DIR__ . '/../..' . '/inc/Setup/Blocks.php',
         'Magazine\\Setup\\Fonts' => __DIR__ . '/../..' . '/inc/Setup/Fonts.php',
+        'Magazine\\Setup\\ImageFocus' => __DIR__ . '/../..' . '/inc/Setup/ImageFocus.php',
         'Magazine\\Setup\\Patterns' => __DIR__ . '/../..' . '/inc/Setup/Patterns.php',
         'Magazine\\Setup\\Supports' => __DIR__ . '/../..' . '/inc/Setup/Supports.php',
         'Magazine\\Theme' => __DIR__ . '/../..' . '/inc/Theme.php',

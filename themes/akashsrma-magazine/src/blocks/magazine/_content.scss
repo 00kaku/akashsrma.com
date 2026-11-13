@@ -435,6 +435,7 @@ $tint: rgb(27 26 23 / 5%);
 		height: auto;
 		max-height: var(--mz-media-max);
 		object-fit: cover;
+		object-position: var(--mz-focus, 50% 50%); // the Image block's crop focus (Setup\ImageFocus)
 	}
 
 	.wp-block-video video {

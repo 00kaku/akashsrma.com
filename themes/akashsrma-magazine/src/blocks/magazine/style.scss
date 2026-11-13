@@ -398,6 +398,7 @@
 		height: 100%;
 		max-height: none;
 		object-fit: cover;
+		object-position: var(--mz-focus, 50% 50%);
 	}
 }
 
