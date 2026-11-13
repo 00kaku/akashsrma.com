@@ -33,6 +33,6 @@ if ( ! $akashsrma_links ) {
 ?>
 <div <?php echo get_block_wrapper_attributes(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped by core. ?>>
 	<?php foreach ( $akashsrma_links as $akashsrma_label => $akashsrma_url ) : ?>
-		<a class="project-links__a" href="<?php echo esc_url( $akashsrma_url ); ?>" target="_blank" rel="noopener"><?php echo esc_html( $akashsrma_label ); ?> ↗</a>
+		<a class="project-links__a" href="<?php echo esc_url( $akashsrma_url ); ?>" target="_blank" rel="noopener"><?php echo esc_html( $akashsrma_label ); ?> →</a>
 	<?php endforeach; ?>
 </div>

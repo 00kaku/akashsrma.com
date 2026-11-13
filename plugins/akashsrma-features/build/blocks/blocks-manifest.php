@@ -8,7 +8,7 @@ return array(
 		'title' => 'Code & live links',
 		'category' => 'text',
 		'icon' => 'admin-links',
-		'description' => 'Code ↗ · Live ↗ links for a project or learning post, or a note when the work is private.',
+		'description' => 'Code → · Live → links for a project or learning post, or a note when the work is private.',
 		'textdomain' => 'akashsrma-features',
 		'usesContext' => array(
 			'postId',

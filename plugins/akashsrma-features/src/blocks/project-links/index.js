@@ -21,9 +21,9 @@ function Edit( { context: { postId, postType } } ) {
 	const set = ( key ) => ( value ) => setMeta( { ...meta, [ key ]: value } );
 
 	const links = [
-		meta.code_url && __( 'Code ↗', 'akashsrma-features' ),
+		meta.code_url && __( 'Code →', 'akashsrma-features' ),
 		meta.live_url &&
-			`${ meta.live_label || __( 'Live', 'akashsrma-features' ) } ↗`,
+			`${ meta.live_label || __( 'Live', 'akashsrma-features' ) } →`,
 	].filter( Boolean );
 
 	return (
