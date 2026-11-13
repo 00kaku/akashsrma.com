@@ -54,6 +54,7 @@ final class Plugin {
 			$sections,
 			new Content\SectionData( $sections ),
 			new Content\Comments(),
+			new Content\ImageFormats(),
 
 			// Blocks, for every theme or only those that declare the feature a block needs.
 			new Blocks\Blocks( $config, $dir . '/build/blocks' ),

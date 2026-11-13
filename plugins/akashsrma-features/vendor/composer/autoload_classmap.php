@@ -10,6 +10,7 @@ return array(
     'Akashsrma\\Features\\Admin\\SectionsPage' => $baseDir . '/inc/Admin/SectionsPage.php',
     'Akashsrma\\Features\\Blocks\\Blocks' => $baseDir . '/inc/Blocks/Blocks.php',
     'Akashsrma\\Features\\Content\\Comments' => $baseDir . '/inc/Content/Comments.php',
+    'Akashsrma\\Features\\Content\\ImageFormats' => $baseDir . '/inc/Content/ImageFormats.php',
     'Akashsrma\\Features\\Content\\Meta' => $baseDir . '/inc/Content/Meta.php',
     'Akashsrma\\Features\\Content\\PostTypes' => $baseDir . '/inc/Content/PostTypes.php',
     'Akashsrma\\Features\\Content\\SectionData' => $baseDir . '/inc/Content/SectionData.php',

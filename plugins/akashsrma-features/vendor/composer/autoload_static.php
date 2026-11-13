@@ -25,6 +25,7 @@ class ComposerStaticInitAkashsrmaFeatures
         'Akashsrma\\Features\\Admin\\SectionsPage' => __DIR__ . '/../..' . '/inc/Admin/SectionsPage.php',
         'Akashsrma\\Features\\Blocks\\Blocks' => __DIR__ . '/../..' . '/inc/Blocks/Blocks.php',
         'Akashsrma\\Features\\Content\\Comments' => __DIR__ . '/../..' . '/inc/Content/Comments.php',
+        'Akashsrma\\Features\\Content\\ImageFormats' => __DIR__ . '/../..' . '/inc/Content/ImageFormats.php',
         'Akashsrma\\Features\\Content\\Meta' => __DIR__ . '/../..' . '/inc/Content/Meta.php',
         'Akashsrma\\Features\\Content\\PostTypes' => __DIR__ . '/../..' . '/inc/Content/PostTypes.php',
         'Akashsrma\\Features\\Content\\SectionData' => __DIR__ . '/../..' . '/inc/Content/SectionData.php',
