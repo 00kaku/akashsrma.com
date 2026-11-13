@@ -5,6 +5,31 @@
 
 @use "content" as *;
 
+// On book-sized screens (book.js's BOOK_QUERY) the scrolling edition is only the no-script fallback:
+// until book.js has set up the book (.is-ready) the stage stays empty instead of showing a layout that is
+// about to change. If the script never runs, the fallback appears after 3 seconds.
+@media (min-width: 1024px) and (min-aspect-ratio: 21 / 20) {
+
+	.magazine:not(.is-ready) > * {
+		visibility: hidden;
+		animation: magazine-fallback 0s 3s forwards;
+	}
+
+	// Its pages aren't rendered either, so their pictures don't start loading in a layout that's about to go.
+	.magazine:not(.is-ready) .magazine__story {
+		content-visibility: hidden;
+		animation: magazine-fallback 0s 3s forwards;
+	}
+}
+
+@keyframes magazine-fallback {
+
+	to {
+		visibility: visible;
+		content-visibility: visible;
+	}
+}
+
 // Stage colours change with dark mode; pages stay paper.
 .magazine {
 	--m-ink: #1b1a17;

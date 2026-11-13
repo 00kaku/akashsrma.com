@@ -728,6 +728,7 @@ export function createBook( root, { onChange } ) {
 	const setMode = () => {
 		const isBook = media.matches;
 		root.classList.toggle( 'is-book', isBook );
+		root.classList.add( 'is-ready' );
 		document.body.classList.toggle( 'has-magazine-book', isBook );
 		if ( isBook ) {
 			// The cover joins the book's own stacking context, so its grab zone can sit above it.
