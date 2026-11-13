@@ -28,7 +28,7 @@ The repo holds two independent packages:
 | Package | Role | Lifetime |
 | --- | --- | --- |
 | **[Akashsrma Features](plugins/akashsrma-features)** (plugin) | What the site holds: Portfolio and Learning collections, their fields, the site's sections and content blocks | Permanent, whatever the theme |
-| **[Magazine](themes/magazine)** (theme) | How it looks: a printed magazine with turning pages on wide screens and swipeable pages on phones | One design; a redesign is a new theme |
+| **[Magazine](themes/akashsrma-magazine)** (theme) | How it looks: a printed magazine with turning pages on wide screens and swipeable pages on phones | One design; a redesign is a new theme |
 
 ```
 ┌──────────────────────┐   akashsrma_sections filter    ┌──────────────────────┐
@@ -65,7 +65,7 @@ Either package runs without the other. Without the plugin, the theme shows its c
 │   ├── src/blocks/                 block sources
 │   ├── build/, vendor/             built blocks and Composer autoloader (committed; CI-verified)
 │   └── assets/                     Sections screen script and styles
-├── themes/magazine/
+├── themes/akashsrma-magazine/
 │   ├── theme.json, style.css       design tokens; theme header
 │   ├── functions.php               bootstrap
 │   ├── inc/                        Core/, Setup/, Routing/, Settings/, Admin/, Layout/

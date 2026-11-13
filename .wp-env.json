@@ -8,7 +8,7 @@
 		"./plugins/akashsrma-features"
 	],
 	"themes": [
-		"./themes/magazine"
+		"./themes/akashsrma-magazine"
 	],
 	"config": {
 		"WP_DEBUG": true,

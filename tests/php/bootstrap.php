@@ -17,8 +17,8 @@ tests_add_filter(
 	function () use ( $akashsrma_repo ) {
 		require $akashsrma_repo . '/plugins/akashsrma-features/akashsrma-features.php';
 		// The test site starts on a default theme; the theme under test is the Magazine theme.
-		add_filter( 'stylesheet', fn() => 'magazine' );
-		add_filter( 'template', fn() => 'magazine' );
+		add_filter( 'stylesheet', fn() => 'akashsrma-magazine' );
+		add_filter( 'template', fn() => 'akashsrma-magazine' );
 	}
 );
 

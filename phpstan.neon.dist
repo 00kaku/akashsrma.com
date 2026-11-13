@@ -3,7 +3,7 @@ parameters:
 	level: 6
 	paths:
 		- plugins/akashsrma-features
-		- themes/magazine
+		- themes/akashsrma-magazine
 	excludePaths:
 		- */build/*
 		- */node_modules/*

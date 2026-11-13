@@ -3,7 +3,7 @@
 	<description>WordPress coding standards for the Magazine theme, the Akashsrma Features plugin and their tests.</description>
 
 	<file>plugins/akashsrma-features</file>
-	<file>themes/magazine</file>
+	<file>themes/akashsrma-magazine</file>
 	<file>tests/php</file>
 	<exclude-pattern>*/build/*</exclude-pattern>
 	<exclude-pattern>*/node_modules/*</exclude-pattern>

@@ -1,5 +1,5 @@
 /**
- * The page-turn physics (themes/magazine/src/blocks/magazine/physics.js): a turning page must land, fall back
+ * The page-turn physics (themes/akashsrma-magazine/src/blocks/magazine/physics.js): a turning page must land, fall back
  * and settle the way the engine relies on. Run with `npm run test:js`.
  */
 import { describe, expect, it } from 'vitest';
@@ -7,7 +7,7 @@ import { describe, expect, it } from 'vitest';
 import {
 	stepSim,
 	simSettled,
-} from '../../themes/magazine/src/blocks/magazine/physics';
+} from '../../themes/akashsrma-magazine/src/blocks/magazine/physics';
 
 const sim = ( props ) => ( {
 	th: 0,
