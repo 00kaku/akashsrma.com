@@ -43,8 +43,9 @@ class ImageFocusTest extends \WP_UnitTestCase {
 	 * A focus point becomes the --mz-focus custom property on the figure.
 	 */
 	public function test_focus_is_printed_on_the_figure(): void {
-		$html = do_blocks( $this->image( array( 'magazineFocus' => $this->point( 0.5, 0.2 ) ) ) );
-		$this->assertStringContainsString( '<figure class="wp-block-image is-style-bleed" style="--mz-focus: 50% 20%">', $html );
+		$tags = new \WP_HTML_Tag_Processor( do_blocks( $this->image( array( 'magazineFocus' => $this->point( 0.5, 0.2 ) ) ) ) );
+		$tags->next_tag( array( 'tag_name' => 'figure' ) );
+		$this->assertSame( '--mz-focus: 50% 20%', $tags->get_attribute( 'style' ) );
 	}
 
 	/**
