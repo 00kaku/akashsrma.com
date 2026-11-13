@@ -41,6 +41,7 @@ wp_interactivity_state(
 	data-wp-init="callbacks.init"
 	data-wp-watch="callbacks.syncTheme"
 	data-home="<?php echo esc_url( home_url( '/' ) ); ?>"
+	data-home-title="<?php echo esc_attr( $magazine_layout['home_title'] ); ?>"
 	aria-label="<?php echo esc_attr( $magazine_name . ' — ' . $magazine_label . '. ' . __( 'Use the left and right arrow keys to turn pages.', 'magazine' ) ); ?>"
 >
 	<header class="magazine__head">
@@ -130,7 +131,7 @@ wp_interactivity_state(
 			<div class="magazine__story">
 				<div class="magazine__row">
 					<?php foreach ( $magazine_story as $magazine_i => $magazine_spread ) : ?>
-						<section class="magazine__spread" data-url="<?php echo esc_url( $magazine_spread['url'] ); ?>" data-section="<?php echo esc_attr( $magazine_spread['section'] ); ?>"<?php echo $magazine_i === $magazine_layout['current'] ? ' data-current' : ''; ?>>
+						<section class="magazine__spread" data-url="<?php echo esc_url( $magazine_spread['url'] ); ?>" data-title="<?php echo esc_attr( $magazine_spread['title'] ); ?>" data-section="<?php echo esc_attr( $magazine_spread['section'] ); ?>"<?php echo $magazine_i === $magazine_layout['current'] ? ' data-current' : ''; ?>>
 							<?php foreach ( $magazine_spread['pages'] as $magazine_side => $magazine_page ) : ?>
 								<div class="magazine__page magazine__page--<?php echo $magazine_side ? 'right' : 'left'; ?> magazine__page--<?php echo esc_attr( $magazine_page['kind'] ); ?>">
 									<?php if ( $magazine_page['image'] ) : ?>

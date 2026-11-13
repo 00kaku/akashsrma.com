@@ -31,7 +31,7 @@ final class Magazine {
 	/**
 	 * Lays out the whole magazine.
 	 *
-	 * @return array{spreads: list<array{url: string, section: string, unit: int, part: int, pages: array{0: array<string, mixed>, 1: array<string, mixed>}}>, tabs: list<array{key: string, label: string, color: string, url: string}>, current: int}
+	 * @return array{spreads: list<array{url: string, title: string, section: string, unit: int, part: int, pages: array{0: array<string, mixed>, 1: array<string, mixed>}}>, tabs: list<array{key: string, label: string, color: string, url: string}>, current: int, home_title: string}
 	 */
 	public static function layout(): array {
 		$sections = Sections::all();
@@ -66,6 +66,7 @@ final class Magazine {
 				$spreads[] = array(
 					// Continuation spreads use WordPress's own paged URLs: /about/2/.
 					'url'     => $k ? trailingslashit( $unit['url'] ) . user_trailingslashit( (string) ( $k + 1 ) ) : $unit['url'],
+					'title'   => $unit['title'],
 					'section' => $sections[ $unit['section'] ]['key'],
 					'unit'    => $u,
 					'part'    => $k,
@@ -104,10 +105,37 @@ final class Magazine {
 		);
 
 		return array(
-			'spreads' => $spreads,
-			'tabs'    => array_values( $tabs ),
-			'current' => self::current( $owners, count( $spreads ) ),
+			'spreads'    => $spreads,
+			'tabs'       => array_values( $tabs ),
+			'current'    => self::current( $owners, count( $spreads ) ),
+			'home_title' => self::document_title( array( 'id' => 0 ) ),
 		);
+	}
+
+	/**
+	 * The browser title for a URL the magazine shows, so the tab can follow the page as it turns. With The SEO
+	 * Framework active it is that plugin's title; otherwise WordPress's own pattern ("Title - Site").
+	 *
+	 * @param array{id?: int, pta?: string} $args A post ID (0 for the home page), or a post type for its archive.
+	 */
+	public static function document_title( array $args ): string {
+		$seo = function_exists( 'tsf' ) ? tsf() : null; // The SEO Framework, when that plugin is active.
+		if ( null !== $seo && method_exists( $seo, 'get_title' ) ) {
+			$title = (string) $seo->get_title( $args );
+		} else {
+			$site = get_bloginfo( 'name', 'display' );
+			$sep  = (string) apply_filters( 'document_title_separator', '-' ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WordPress's own filter.
+			if ( ! empty( $args['pta'] ) ) {
+				$type  = get_post_type_object( $args['pta'] );
+				$title = $type ? $type->labels->name . " $sep $site" : $site;
+			} elseif ( ! empty( $args['id'] ) ) {
+				$title = get_the_title( $args['id'] ) . " $sep $site";
+			} else {
+				$tagline = get_bloginfo( 'description', 'display' );
+				$title   = $tagline ? "$site $sep $tagline" : $site;
+			}
+		}
+		return html_entity_decode( wp_strip_all_tags( $title ), ENT_QUOTES, 'UTF-8' );
 	}
 
 	/**
@@ -136,12 +164,13 @@ final class Magazine {
 	 *
 	 * @param \WP_Post $post    The post.
 	 * @param int      $section Index of its section.
-	 * @return array{owner: string, url: string, section: int, short: string, pages: list<array<string, mixed>>}
+	 * @return array{owner: string, url: string, title: string, section: int, short: string, pages: list<array<string, mixed>>}
 	 */
 	private static function post_unit( \WP_Post $post, int $section ): array {
 		return array(
 			'owner'   => 'post:' . $post->ID,
 			'url'     => (string) get_permalink( $post ),
+			'title'   => self::document_title( array( 'id' => $post->ID ) ),
 			'section' => $section,
 			'short'   => (string) ( get_post_meta( $post->ID, 'short_title', true ) ? get_post_meta( $post->ID, 'short_title', true ) : self::title( $post ) ),
 			'pages'   => self::render_pages( $post ),
@@ -153,7 +182,7 @@ final class Magazine {
 	 *
 	 * @param array{key: string, label: string, url: string, archive: array{title: string, description: string, opener: \WP_Post|null, index: string, back: string, posts: list<\WP_Post>}} $section The section.
 	 * @param int                                                                                                                                                                           $index Index of the section.
-	 * @return array{owner: string, url: string, section: int, short: string, pages: list<array<string, mixed>>}
+	 * @return array{owner: string, url: string, title: string, section: int, short: string, pages: list<array<string, mixed>>}
 	 */
 	private static function archive_unit( array $section, int $index ): array {
 		$archive = $section['archive'];
@@ -177,6 +206,7 @@ final class Magazine {
 		return array(
 			'owner'   => 'archive:' . $section['key'],
 			'url'     => $section['url'],
+			'title'   => self::document_title( array( 'pta' => $section['key'] ) ),
 			'section' => $index,
 			'short'   => $section['label'],
 			'pages'   => $pages,

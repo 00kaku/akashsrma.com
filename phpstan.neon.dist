@@ -4,6 +4,8 @@ parameters:
 	paths:
 		- plugins/akashsrma-features
 		- themes/akashsrma-magazine
+	scanFiles:
+		- tests/phpstan/stubs.php
 	excludePaths:
 		- */build/*
 		- */node_modules/*

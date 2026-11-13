@@ -111,10 +111,21 @@ export function createBook( root, { onChange } ) {
 		} );
 	};
 
+	// The tab title follows the address: a spread's title (the one WordPress prints for its URL), or the home title.
+	const retitle = () => {
+		const i = spreadFor( window.location.href );
+		const title =
+			i >= 0 ? spreads[ i ].dataset.title : root.dataset.homeTitle;
+		if ( title ) {
+			document.title = title;
+		}
+	};
+
 	const pushUrl = ( url ) => {
 		if ( ! fromHistory && ! sameUrl( url, window.location.href ) ) {
 			window.history.pushState( null, '', url );
 		}
+		retitle();
 	};
 
 	// ---- geometry: magazine proportions, centred in the space left of the bookmarks ----
@@ -642,10 +653,12 @@ export function createBook( root, { onChange } ) {
 		} else {
 			swipe.show( firstPage( i ), true );
 			window.history.pushState( null, '', spreads[ i ].dataset.url );
+			retitle();
 		}
 	};
 
 	const onPop = () => {
+		retitle();
 		const i = spreadFor( window.location.href );
 		if ( ! media.matches ) {
 			if ( i >= 0 ) {
@@ -690,6 +703,7 @@ export function createBook( root, { onChange } ) {
 			return;
 		}
 		window.history.replaceState( null, '', spread.dataset.url );
+		retitle();
 		onChange( { open: false, section: spread.dataset.section } );
 	};
 	const swipe = createSwipe( root, {

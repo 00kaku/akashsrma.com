@@ -94,6 +94,27 @@ class LayoutTest extends \WP_UnitTestCase {
 	}
 
 	/**
+	 * Every spread carries the title WordPress gives its URL, continuation spreads included, so the browser tab
+	 * can follow the page as it turns.
+	 */
+	public function test_spreads_carry_their_titles(): void {
+		$post    = $this->page_with( 3 );
+		$spreads = $this->layout_of( $post )['spreads'];
+		$title   = get_the_title( $post ) . ' - ' . get_bloginfo( 'name' );
+
+		$this->assertSame( $title, $spreads[0]['title'] );
+		$this->assertSame( $title, $spreads[1]['title'] );
+	}
+
+	/**
+	 * The home title is the site name and tagline, as on the front page.
+	 */
+	public function test_home_title(): void {
+		update_option( 'blogdescription', 'Web Engineer' );
+		$this->assertSame( get_bloginfo( 'name' ) . ' - Web Engineer', $this->layout_of( $this->page_with( 1 ) )['home_title'] );
+	}
+
+	/**
 	 * A sectionless site lays out nothing, and the magazine stays closed.
 	 */
 	public function test_no_sections(): void {
