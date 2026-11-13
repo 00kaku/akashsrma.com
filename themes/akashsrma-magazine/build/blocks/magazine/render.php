@@ -82,7 +82,6 @@ wp_interactivity_state(
 				false,
 				array(
 					'class' => 'magazine__cover-photo',
-					'alt'   => '',
 				)
 			);
 			?>
