@@ -52,11 +52,9 @@ export function createBook( root, { onChange } ) {
 		...s.querySelectorAll( ':scope > .magazine__page' ),
 	] );
 	const coverEl = root.querySelector( '.magazine__cover' );
-	// Every page is already in the document and any of them can turn into view, so none of their
-	// pictures may wait for lazy loading.
-	root.querySelectorAll( 'img[loading="lazy"]' ).forEach( ( img ) => {
-		img.loading = 'eager';
-	} );
+	// Every page is in the document, but only the spreads around the reader are rendered (.is-near), so a
+	// first visit loads a few pictures, not the whole issue. A turn or jump marks its destination near as it
+	// starts, and waits for the pictures it shows to decode (warm) before it moves.
 	const box = root.querySelector( '.magazine__spreads' );
 	const leavesEl = el( 'magazine__leaves', box );
 	const casts = [
@@ -84,10 +82,24 @@ export function createBook( root, { onChange } ) {
 
 	// ---- what's on screen ----
 
+	// A spread and the ones either side are rendered, so their pictures load before a turn reaches them.
+	const near = ( i ) =>
+		[ i - 1, i, i + 1 ].forEach( ( k ) =>
+			pages[ k ]?.forEach( ( p ) => p.classList.add( 'is-near' ) )
+		);
+
 	const show = ( left, right ) => {
-		pages.flat().forEach( ( p ) => p.classList.remove( 'is-shown' ) );
+		pages
+			.flat()
+			.forEach( ( p ) => p.classList.remove( 'is-shown', 'is-near' ) );
 		left?.classList.add( 'is-shown' );
 		right?.classList.add( 'is-shown' );
+		// On the cover nothing is shown (index -1), which makes the first spread the near one.
+		near(
+			pages.findIndex(
+				( pair ) => pair.includes( left ) || pair.includes( right )
+			)
+		);
 		root.classList.toggle( 'has-left', !! left );
 	};
 
@@ -442,6 +454,7 @@ export function createBook( root, { onChange } ) {
 		}
 		phase = 'opening';
 		cur = i;
+		near( i );
 		// A cover already lifted by the pointer carries straight on; one still being prepared starts over.
 		let lifted = sims.get( 'cover' );
 		if ( lifted && lifted.delay === Infinity ) {
@@ -502,6 +515,7 @@ export function createBook( root, { onChange } ) {
 		if ( ! d ) {
 			return;
 		}
+		near( to );
 		const dir = d > 0 ? 'fwd' : 'bwd';
 		const n = peek ? 1 : Math.min( Math.abs( d ), 3 );
 		turn = { from: cur, to, dir, n, peek };

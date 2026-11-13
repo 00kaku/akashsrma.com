@@ -917,6 +917,13 @@
 			visibility: visible;
 		}
 
+		// Pages away from the reader aren't rendered, so their pictures wait until a turn heads their way
+		// (book.js marks the spreads either side .is-near). Logged in, every page renders so book.js can
+		// outline the ones that overflow.
+		body:not(.logged-in) &:not(.is-shown, .is-near, .is-clone) {
+			content-visibility: hidden;
+		}
+
 		// A turning page's copy takes its face's visibility: book.js hides the face pointing away,
 		// and an explicit `visible` here would let the back of the page show through, mirrored.
 		&.is-clone {
