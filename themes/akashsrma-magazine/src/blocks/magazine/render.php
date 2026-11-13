@@ -82,7 +82,10 @@ wp_interactivity_state(
 				'full',
 				false,
 				array(
-					'class' => 'magazine__cover-photo',
+					'class'         => 'magazine__cover-photo',
+					// The first thing on screen: fetched at once, ahead of the pages' pictures.
+					'loading'       => 'eager',
+					'fetchpriority' => 'high',
 				)
 			);
 			?>
